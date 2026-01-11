@@ -1,0 +1,311 @@
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Skill Genome - Dark Theme Primary */
+    --background: 240 5% 11%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 5% 13%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 5% 13%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Poison Pink Primary */
+    --primary: 330 94% 73%;
+    --primary-foreground: 240 5% 11%;
+
+    --secondary: 240 4% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 4% 20%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 330 94% 73%;
+    --accent-foreground: 240 5% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 4% 22%;
+    --input: 240 4% 22%;
+    --ring: 330 94% 73%;
+
+    --radius: 0.75rem;
+
+    /* Custom Skill Genome Colors */
+    --genome-pink: 330 94% 73%;
+    --genome-pink-glow: 330 100% 80%;
+    --genome-dark: 240 5% 11%;
+    --genome-darker: 240 6% 8%;
+    --genome-card: 240 5% 13%;
+    --genome-border: 240 4% 22%;
+    
+    /* Skill Level Colors */
+    --skill-beginner: 45 93% 58%;
+    --skill-intermediate: 199 89% 48%;
+    --skill-advanced: 142 71% 45%;
+    --skill-expert: 330 94% 73%;
+    
+    /* Chart Colors */
+    --chart-1: 330 94% 73%;
+    --chart-2: 199 89% 48%;
+    --chart-3: 142 71% 45%;
+    --chart-4: 45 93% 58%;
+    --chart-5: 280 87% 65%;
+
+    --sidebar-background: 240 5% 11%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 330 94% 73%;
+    --sidebar-primary-foreground: 240 5% 11%;
+    --sidebar-accent: 240 4% 18%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 4% 22%;
+    --sidebar-ring: 330 94% 73%;
+  }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 5% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 5% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 5% 11%;
+
+    --primary: 330 94% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 5% 11%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 40%;
+
+    --accent: 330 94% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5% 90%;
+    --input: 240 5% 90%;
+    --ring: 330 94% 55%;
+
+    --genome-pink: 330 94% 55%;
+    --genome-pink-glow: 330 100% 65%;
+    --genome-dark: 0 0% 100%;
+    --genome-darker: 240 5% 96%;
+    --genome-card: 0 0% 100%;
+    --genome-border: 240 5% 90%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Genome Glow Effects */
+  .genome-glow {
+    box-shadow: 0 0 20px hsl(var(--genome-pink) / 0.3),
+                0 0 40px hsl(var(--genome-pink) / 0.1);
+  }
+
+  .genome-glow-intense {
+    box-shadow: 0 0 30px hsl(var(--genome-pink) / 0.5),
+                0 0 60px hsl(var(--genome-pink) / 0.2),
+                0 0 100px hsl(var(--genome-pink) / 0.1);
+  }
+
+  .genome-glow-subtle {
+    box-shadow: 0 0 10px hsl(var(--genome-pink) / 0.2);
+  }
+
+  /* Card Styles */
+  .genome-card {
+    @apply bg-card rounded-xl border border-border p-6;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .genome-card:hover {
+    @apply border-primary/30;
+    box-shadow: 0 4px 20px hsl(var(--genome-pink) / 0.1);
+    transform: translateY(-2px);
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-genome {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--genome-dark)) 0%,
+      hsl(var(--genome-darker)) 50%,
+      hsl(240 6% 6%) 100%
+    );
+  }
+
+  .gradient-pink-dark {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--genome-pink) / 0.15) 0%,
+      transparent 50%
+    );
+  }
+
+  .gradient-radial-pink {
+    background: radial-gradient(
+      ellipse at center,
+      hsl(var(--genome-pink) / 0.1) 0%,
+      transparent 70%
+    );
+  }
+
+  /* Text Gradients */
+  .text-gradient-pink {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--genome-pink)) 0%,
+      hsl(var(--genome-pink-glow)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Neural Network Animation */
+  .neural-line {
+    stroke: hsl(var(--genome-pink) / 0.3);
+    stroke-width: 1;
+  }
+
+  .neural-node {
+    fill: hsl(var(--genome-pink));
+    filter: drop-shadow(0 0 6px hsl(var(--genome-pink) / 0.6));
+  }
+
+  /* Button Variants */
+  .btn-genome-primary {
+    @apply bg-primary text-primary-foreground font-semibold;
+    @apply px-6 py-3 rounded-lg;
+    @apply transition-all duration-300;
+    @apply hover:scale-105;
+    box-shadow: 0 4px 14px hsl(var(--genome-pink) / 0.4);
+  }
+
+  .btn-genome-primary:hover {
+    box-shadow: 0 6px 20px hsl(var(--genome-pink) / 0.5);
+  }
+
+  .btn-genome-secondary {
+    @apply bg-transparent text-foreground font-medium;
+    @apply px-6 py-3 rounded-lg;
+    @apply border border-border;
+    @apply transition-all duration-300;
+    @apply hover:border-primary/50 hover:bg-primary/5;
+  }
+
+  /* Progress Bars */
+  .progress-genome {
+    @apply h-2 rounded-full bg-muted overflow-hidden;
+  }
+
+  .progress-genome-fill {
+    @apply h-full rounded-full;
+    background: linear-gradient(90deg, hsl(var(--genome-pink)), hsl(var(--genome-pink-glow)));
+  }
+
+  /* Skill Level Indicators */
+  .skill-beginner {
+    @apply text-yellow-400;
+  }
+
+  .skill-intermediate {
+    @apply text-blue-400;
+  }
+
+  .skill-advanced {
+    @apply text-green-400;
+  }
+
+  .skill-expert {
+    @apply text-primary;
+  }
+}
+
+@layer utilities {
+  /* Animation Utilities */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-neural {
+    animation: neural-flow 3s linear infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      opacity: 1;
+      filter: drop-shadow(0 0 8px hsl(var(--genome-pink) / 0.6));
+    }
+    50% { 
+      opacity: 0.8;
+      filter: drop-shadow(0 0 16px hsl(var(--genome-pink) / 0.8));
+    }
+  }
+
+  @keyframes neural-flow {
+    0% { stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 0; }
+  }
+
+  /* Scrollbar Styling */
+  .scrollbar-genome::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-genome::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  .scrollbar-genome::-webkit-scrollbar-thumb {
+    background: hsl(var(--genome-pink) / 0.5);
+    border-radius: 3px;
+  }
+
+  .scrollbar-genome::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--genome-pink));
+  }
+}
