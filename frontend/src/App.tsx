@@ -30,12 +30,16 @@ const AppContent = () => {
   const location = useLocation();
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  // Show modal when user is logged in but profile is incomplete
+  // Show modal when user is logged in but profile is incomplete OR not created yet
   useEffect(() => {
-    if (!loading && user && profile && !isProfileComplete) {
+    if (!loading && user) {
+      // Show modal if profile doesn't exist yet OR profile exists but not completed
+      const shouldShowModal = !profile || !isProfileComplete;
       // Don't show modal on auth or complete-profile pages
-      if (location.pathname !== "/auth" && location.pathname !== "/complete-profile") {
+      if (shouldShowModal && location.pathname !== "/auth" && location.pathname !== "/complete-profile") {
         setShowProfileModal(true);
+      } else {
+        setShowProfileModal(false);
       }
     } else {
       setShowProfileModal(false);

@@ -93,6 +93,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
+    // Ensure profile exists - create one if it doesn't (fallback for email signups)
+    const ensureProfileExists = async (userId: string, authUser: User): Promise<UserProfile | null> => {
+        try {
+            // First try to fetch existing profile
+            let profileData = await fetchProfile(userId);
+
+            if (!profileData) {
+                // Profile doesn't exist, create a basic one
+                console.log("Profile not found, creating basic profile for user:", userId);
+
+                const { error: insertError } = await supabase
+                    .from("users")
+                    .upsert({
+                        id: userId,
+                        email: authUser.email || "",
+                        full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || "",
+                        avatar_url: authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || "",
+                        provider: authUser.app_metadata?.provider || "email",
+                        profile_completed: false,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                    }, {
+                        onConflict: 'id'
+                    });
+
+                if (insertError) {
+                    console.error("Error creating profile:", insertError);
+                    return null;
+                }
+
+                // Fetch the newly created profile
+                profileData = await fetchProfile(userId);
+            }
+
+            return profileData;
+        } catch (err) {
+            console.error("Error ensuring profile exists:", err);
+            return null;
+        }
+    };
+
     useEffect(() => {
         if (!isConfigured) {
             setLoading(false);
@@ -104,9 +145,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setSession(session);
             setUser(session?.user ?? null);
 
-            // Fetch profile if user exists
+            // Ensure profile exists if user is logged in
             if (session?.user?.id) {
-                const profileData = await fetchProfile(session.user.id);
+                const profileData = await ensureProfileExists(session.user.id, session.user);
                 setProfile(profileData);
             }
 
@@ -120,11 +161,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setSession(session);
             setUser(session?.user ?? null);
 
-            // Fetch profile on auth change (login/signup)
+            // Ensure profile exists on auth change (login/signup)
             if (session?.user?.id) {
-                // Small delay to allow trigger to create profile
+                // Small delay to allow trigger to create profile first
                 setTimeout(async () => {
-                    const profileData = await fetchProfile(session.user.id);
+                    const profileData = await ensureProfileExists(session.user.id, session.user);
                     setProfile(profileData);
                 }, 500);
             } else {

@@ -1,5 +1,6 @@
 const express = require("express");
 const { supabaseAdmin, isSupabaseConfigured } = require("../config/supabaseClient");
+const { evaluateAnswer, isMistralConfigured } = require("../services/mistralService");
 
 const router = express.Router();
 
@@ -144,6 +145,53 @@ router.post("/complete", async (req, res) => {
         res.status(500).json({
             success: false,
             error: error.message || "Failed to complete task",
+        });
+    }
+});
+
+// Validate user's answer using Mistral AI
+router.post("/validate-answer", async (req, res) => {
+    try {
+        const { taskId, userId, answer, question, technology } = req.body;
+
+        if (!answer || !question) {
+            return res.status(400).json({
+                success: false,
+                error: "Answer and question are required",
+            });
+        }
+
+        // Minimum answer length check
+        if (answer.trim().length < 10) {
+            return res.json({
+                success: true,
+                isCorrect: false,
+                score: 0,
+                feedback: "Your answer is too short. Please provide a more detailed response.",
+                strengths: "",
+                improvements: "Add more detail and explanation to your answer.",
+            });
+        }
+
+        // Use Mistral AI to evaluate the answer
+        const evaluation = await evaluateAnswer(question, answer, technology || "General");
+
+        // Consider score >= 6 as correct (passing grade)
+        const isCorrect = evaluation.score >= 6;
+
+        res.json({
+            success: true,
+            isCorrect,
+            score: evaluation.score,
+            feedback: evaluation.feedback,
+            strengths: evaluation.strengths,
+            improvements: evaluation.improvements,
+        });
+    } catch (error) {
+        console.error("Answer validation error:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message || "Failed to validate answer",
         });
     }
 });

@@ -64,7 +64,7 @@ const Auth = () => {
     // Redirect if already logged in
     useEffect(() => {
         if (user) {
-            navigate("/build");
+            navigate("/dashboard");
         }
     }, [user, navigate]);
 
@@ -80,17 +80,17 @@ const Auth = () => {
                 if (error) {
                     setError(error.message);
                 } else {
-                    setSuccessMessage("Account created! Please check your email to confirm.");
+                    setSuccessMessage("Account created! Redirecting to complete your profile...");
                     setTimeout(() => {
-                        navigate("/");
-                    }, 2000);
+                        navigate("/dashboard");
+                    }, 1500);
                 }
             } else {
                 const { error } = await signIn(email, password);
                 if (error) {
                     setError(error.message);
                 } else {
-                    navigate("/build");
+                    navigate("/dashboard");
                 }
             }
         } catch (err: any) {

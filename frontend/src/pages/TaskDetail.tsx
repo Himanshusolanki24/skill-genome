@@ -16,6 +16,9 @@ import {
     Trophy,
     Send,
     Flame,
+    AlertCircle,
+    ThumbsUp,
+    ThumbsDown,
 } from "lucide-react";
 
 interface Task {
@@ -46,9 +49,17 @@ const TaskDetail = () => {
     const [answer, setAnswer] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const [showCelebration, setShowCelebration] = useState(false);
     const [streakData, setStreakData] = useState<{ currentStreak: number; isFirstActivityToday: boolean } | null>(null);
+    const [validationResult, setValidationResult] = useState<{
+        isCorrect: boolean;
+        score: number;
+        feedback: string;
+        strengths: string;
+        improvements: string;
+    } | null>(null);
 
     useEffect(() => {
         // Get task from localStorage (passed from Tasks page)
@@ -83,9 +94,51 @@ const TaskDetail = () => {
             return;
         }
 
-        setIsSubmitting(true);
+        setIsValidating(true);
+        setValidationResult(null);
 
         try {
+            // Step 1: Validate the answer using Mistral AI
+            const validateResponse = await fetch(`${API_BASE_URL}/api/daily-tasks/validate-answer`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    taskId: task.id,
+                    userId: user.id,
+                    answer: answer,
+                    question: task.question,
+                    technology: task.technology,
+                }),
+            });
+
+            const validateData = await validateResponse.json();
+
+            if (!validateData.success) {
+                toast({
+                    title: "Validation Error",
+                    description: validateData.error || "Failed to validate answer.",
+                    variant: "destructive",
+                });
+                setIsValidating(false);
+                return;
+            }
+
+            setValidationResult(validateData);
+
+            // Step 2: If answer is NOT correct, show feedback and stop
+            if (!validateData.isCorrect) {
+                toast({
+                    title: `Score: ${validateData.score}/10 - Try Again!`,
+                    description: "Your answer needs improvement. Check the feedback below.",
+                    variant: "destructive",
+                });
+                setIsValidating(false);
+                return;
+            }
+
+            // Step 3: Answer is correct! Mark task as complete
+            setIsSubmitting(true);
+
             const response = await fetch(`${API_BASE_URL}/api/daily-tasks/complete`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -129,7 +182,7 @@ const TaskDetail = () => {
                 setShowCelebration(true);
 
                 toast({
-                    title: `+${task.xp_reward} XP! 🎉`,
+                    title: `Score: ${validateData.score}/10 - Excellent! +${task.xp_reward} XP! 🎉`,
                     description: "Great job completing the task!",
                 });
 
@@ -146,6 +199,7 @@ const TaskDetail = () => {
                 variant: "destructive",
             });
         } finally {
+            setIsValidating(false);
             setIsSubmitting(false);
         }
     };
@@ -287,21 +341,53 @@ const TaskDetail = () => {
                                                 onChange={(e) => setAnswer(e.target.value)}
                                                 placeholder="Write your answer here... You can include code examples, explanations, or any relevant details."
                                                 rows={8}
-                                                className="w-full bg-background/50 border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none"
+                                                className="w-full bg-background/50 border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none font-mono text-sm"
                                             />
                                         </div>
+
+                                        {/* Validation Feedback */}
+                                        {validationResult && !validationResult.isCorrect && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 space-y-3"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <AlertCircle className="w-5 h-5 text-red-400" />
+                                                    <span className="font-semibold text-red-400">
+                                                        Score: {validationResult.score}/10 - Needs Improvement
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-foreground">
+                                                    {validationResult.feedback}
+                                                </p>
+                                                {validationResult.improvements && (
+                                                    <div className="flex items-start gap-2 text-sm">
+                                                        <ThumbsDown className="w-4 h-4 text-muted-foreground mt-0.5" />
+                                                        <span className="text-muted-foreground">
+                                                            <strong>Improve:</strong> {validationResult.improvements}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        )}
 
                                         <Button
                                             variant="genome"
                                             size="lg"
                                             onClick={handleSubmit}
-                                            disabled={isSubmitting || !answer.trim()}
+                                            disabled={isValidating || isSubmitting || !answer.trim()}
                                             className="w-full"
                                         >
-                                            {isSubmitting ? (
+                                            {isValidating ? (
                                                 <>
                                                     <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                                                    Submitting...
+                                                    Checking your answer...
+                                                </>
+                                            ) : isSubmitting ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                                    Completing task...
                                                 </>
                                             ) : (
                                                 <>
