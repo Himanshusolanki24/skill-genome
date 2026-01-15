@@ -21,6 +21,7 @@ import {
     Brain,
     RefreshCw,
 } from "lucide-react";
+import { API_BASE_URL, parseApiResponse } from "@/lib/api";
 
 type InputMode = "github" | "resume";
 
@@ -39,8 +40,6 @@ interface ExtractionResult {
     username?: string;
     filename?: string;
 }
-
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const BuildGenome = () => {
     const [inputMode, setInputMode] = useState<InputMode>("github");
@@ -129,13 +128,13 @@ const BuildGenome = () => {
             const loadingPromise = runLoadingAnimation();
 
             // Fetch skills from API
-            const response = await fetch(`${API_BASE}/api/github/skills`, {
+            const response = await fetch(`${API_BASE_URL}/api/github/skills`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: githubUsername }),
             });
 
-            const data = await response.json();
+            const data = await parseApiResponse(response);
 
             // Wait for loading animation to complete
             await loadingPromise;
@@ -168,12 +167,12 @@ const BuildGenome = () => {
             const formData = new FormData();
             formData.append("resume", resumeFile);
 
-            const response = await fetch(`${API_BASE}/api/resume/skills`, {
+            const response = await fetch(`${API_BASE_URL}/api/resume/skills`, {
                 method: "POST",
                 body: formData,
             });
 
-            const data = await response.json();
+            const data = await parseApiResponse(response);
 
             // Wait for loading animation to complete
             await loadingPromise;

@@ -19,6 +19,7 @@ import {
     Home,
     ChevronRight,
 } from "lucide-react";
+import { API_BASE_URL, parseApiResponse } from "@/lib/api";
 
 interface Skill {
     name: string;
@@ -43,8 +44,6 @@ interface AnswerResult {
     answer: string;
     evaluation: Evaluation;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const TechnicalInterview = () => {
     const navigate = useNavigate();
@@ -101,7 +100,7 @@ const TechnicalInterview = () => {
                 }),
             });
 
-            const data = await response.json();
+            const data = await parseApiResponse(response);
 
             if (!data.success) {
                 throw new Error(data.error || "Failed to start interview");
@@ -145,7 +144,7 @@ const TechnicalInterview = () => {
                 }),
             });
 
-            const data = await response.json();
+            const data = await parseApiResponse(response);
 
             if (!data.success) {
                 throw new Error(data.error || "Failed to submit answer");

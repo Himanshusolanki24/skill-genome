@@ -20,6 +20,7 @@ import {
     ThumbsUp,
     ThumbsDown,
 } from "lucide-react";
+import { API_BASE_URL, parseApiResponse } from "@/lib/api";
 
 interface Task {
     id: string;
@@ -30,8 +31,6 @@ interface Task {
     xp_reward: number;
     expected_time_minutes: number;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const difficultyColors = {
     beginner: "bg-skill-beginner/10 text-skill-beginner border-skill-beginner/30",
@@ -111,7 +110,7 @@ const TaskDetail = () => {
                 }),
             });
 
-            const validateData = await validateResponse.json();
+            const validateData = await parseApiResponse(validateResponse);
 
             if (!validateData.success) {
                 toast({
@@ -149,7 +148,7 @@ const TaskDetail = () => {
                 }),
             });
 
-            const data = await response.json();
+            const data = await parseApiResponse(response);
 
             if (data.success) {
                 // Save to localStorage
@@ -170,7 +169,7 @@ const TaskDetail = () => {
                             xpEarned: task.xp_reward,
                         }),
                     });
-                    const streakResult = await streakResponse.json();
+                    const streakResult = await parseApiResponse(streakResponse);
                     if (streakResult.success) {
                         setStreakData(streakResult.data);
                     }

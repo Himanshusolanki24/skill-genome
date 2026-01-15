@@ -18,6 +18,7 @@ import {
   Trophy,
   Loader2,
 } from "lucide-react";
+import { API_BASE_URL, parseApiResponse } from "@/lib/api";
 
 interface Task {
   id: string;
@@ -29,8 +30,6 @@ interface Task {
   expected_time_minutes: number;
   completed?: boolean;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const difficultyColors = {
   beginner: "bg-skill-beginner/10 text-skill-beginner border-skill-beginner/30",
@@ -81,7 +80,7 @@ const Tasks = () => {
       const params = [techParam, diffParam].filter(Boolean).join("&");
 
       const response = await fetch(`${API_BASE_URL}/api/daily-tasks/tasks?${params}`);
-      const data = await response.json();
+      const data = await parseApiResponse(response);
 
       if (data.success) {
         setTasks(data.data || []);
@@ -96,7 +95,7 @@ const Tasks = () => {
   const fetchStreak = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/daily-tasks/streak/${user?.id}`);
-      const data = await response.json();
+      const data = await parseApiResponse(response);
       if (data.success) {
         setStreak(data.data.currentStreak || 0);
       }
@@ -108,7 +107,7 @@ const Tasks = () => {
   const fetchCompletedTasks = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/daily-tasks/completed/${user?.id}`);
-      const data = await response.json();
+      const data = await parseApiResponse(response);
       if (data.success) {
         setCompletedTaskIds(data.data.completedTaskIds || []);
         setTotalXpToday(data.data.totalXpToday || 0);
