@@ -7,17 +7,21 @@ const GITHUB_API = "https://api.github.com";
 // Get GitHub token from environment (optional but recommended for higher rate limits)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+// Log token status at startup (don't log the actual token for security)
+console.log(`GitHub Token configured: ${GITHUB_TOKEN ? 'Yes (length: ' + GITHUB_TOKEN.length + ')' : 'No'}`);
+
+
 // Build headers with optional authentication
 function getGitHubHeaders() {
     const headers = {
         Accept: "application/vnd.github.v3+json",
         "User-Agent": "SkillGenome-App",
     };
-    
+
     if (GITHUB_TOKEN) {
         headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
     }
-    
+
     return headers;
 }
 
@@ -35,13 +39,22 @@ async function fetchUserRepos(username) {
         });
         return response.data;
     } catch (error) {
+        console.error('GitHub API Error:', {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            message: error.message,
+            data: error.response?.data
+        });
         if (error.response?.status === 404) {
             throw new Error(`GitHub user "${username}" not found`);
         }
         if (error.response?.status === 403) {
             throw new Error("GitHub API rate limit exceeded. Try again later.");
         }
-        throw new Error("Failed to fetch GitHub repositories");
+        if (error.response?.status === 401) {
+            throw new Error("GitHub token is invalid or expired");
+        }
+        throw new Error(`Failed to fetch GitHub repositories: ${error.message}`);
     }
 }
 

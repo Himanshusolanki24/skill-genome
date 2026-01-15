@@ -28,7 +28,7 @@ BEGIN
         NEW.email,
         COALESCE(
             NEW.raw_user_meta_data->>'full_name',
-            NEW.raw_user_meta_data->>'name',
+            NEW.raw_user_meta_data->>'name',    
             NEW.raw_user_meta_data->>'given_name' || ' ' || NEW.raw_user_meta_data->>'family_name',
             ''
         ),
