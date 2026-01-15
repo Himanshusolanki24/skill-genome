@@ -4,6 +4,23 @@ const { getSkillInfo } = require("../data/skillColors");
 // GitHub API base URL
 const GITHUB_API = "https://api.github.com";
 
+// Get GitHub token from environment (optional but recommended for higher rate limits)
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+// Build headers with optional authentication
+function getGitHubHeaders() {
+    const headers = {
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "SkillGenome-App",
+    };
+    
+    if (GITHUB_TOKEN) {
+        headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
+    }
+    
+    return headers;
+}
+
 /**
  * Fetch all public repositories for a GitHub username
  */
@@ -14,10 +31,7 @@ async function fetchUserRepos(username) {
                 per_page: 100, // Get up to 100 repos
                 sort: "updated",
             },
-            headers: {
-                Accept: "application/vnd.github.v3+json",
-                "User-Agent": "SkillGenome-App",
-            },
+            headers: getGitHubHeaders(),
         });
         return response.data;
     } catch (error) {
@@ -39,10 +53,7 @@ async function fetchRepoLanguages(owner, repo) {
         const response = await axios.get(
             `${GITHUB_API}/repos/${owner}/${repo}/languages`,
             {
-                headers: {
-                    Accept: "application/vnd.github.v3+json",
-                    "User-Agent": "SkillGenome-App",
-                },
+                headers: getGitHubHeaders(),
             }
         );
         return response.data;
