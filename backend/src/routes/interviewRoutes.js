@@ -320,7 +320,7 @@ router.post("/save-results", async (req, res) => {
         }).catch(() => {
             // If RPC doesn't exist, try direct update
             return supabaseAdmin
-                .from("user_profiles")
+                .from("users")
                 .update({ total_xp: supabaseAdmin.raw(`COALESCE(total_xp, 0) + ${calculatedXp}`) })
                 .eq("id", userId);
         });

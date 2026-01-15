@@ -25,14 +25,15 @@ const queryClient = new QueryClient();
 
 // Wrapper component to handle profile completion modal
 const AppContent = () => {
-  const { user, isProfileComplete, loading, profile } = useAuth();
+  const { user, isProfileComplete, loading, profileLoading, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   // Show modal when user is logged in but profile is incomplete OR not created yet
   useEffect(() => {
-    if (!loading && user) {
+    // Wait for both auth and profile to be fully loaded before showing modal
+    if (!loading && !profileLoading && user) {
       // Show modal if profile doesn't exist yet OR profile exists but not completed
       const shouldShowModal = !profile || !isProfileComplete;
       // Don't show modal on auth or complete-profile pages
@@ -44,7 +45,7 @@ const AppContent = () => {
     } else {
       setShowProfileModal(false);
     }
-  }, [user, isProfileComplete, loading, profile, location.pathname]);
+  }, [user, isProfileComplete, loading, profileLoading, profile, location.pathname]);
 
   const handleCompleteProfile = () => {
     setShowProfileModal(false);

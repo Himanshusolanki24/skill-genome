@@ -34,10 +34,9 @@ interface AuthContextType {
     profile: UserProfile | null;
     session: Session | null;
     loading: boolean;
+    profileLoading: boolean;
     isConfigured: boolean;
     isProfileComplete: boolean;
-    signUp: (email: string, password: string, fullName?: string) => Promise<{ error: AuthError | null }>;
-    signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
     signInWithGoogle: () => Promise<{ error: AuthError | null }>;
     signInWithLinkedIn: () => Promise<{ error: AuthError | null }>;
     signOut: () => Promise<void>;
@@ -63,6 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
+    const [profileLoading, setProfileLoading] = useState(true);
     const isConfigured = isSupabaseConfigured();
 
     // Fetch user profile from database
@@ -88,12 +88,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Refresh profile data
     const refreshProfile = async () => {
         if (user?.id) {
+            setProfileLoading(true);
             const profileData = await fetchProfile(user.id);
             setProfile(profileData);
+            setProfileLoading(false);
         }
     };
 
-    // Ensure profile exists - create one if it doesn't (fallback for email signups)
+    // Ensure profile exists - create one if it doesn't (fallback for OAuth users)
     const ensureProfileExists = async (userId: string, authUser: User): Promise<UserProfile | null> => {
         try {
             // First try to fetch existing profile
@@ -110,7 +112,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                         email: authUser.email || "",
                         full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || "",
                         avatar_url: authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || "",
-                        provider: authUser.app_metadata?.provider || "email",
+                        provider: authUser.app_metadata?.provider || "oauth",
                         profile_completed: false,
                         created_at: new Date().toISOString(),
                         updated_at: new Date().toISOString(),
@@ -137,6 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     useEffect(() => {
         if (!isConfigured) {
             setLoading(false);
+            setProfileLoading(false);
             return;
         }
 
@@ -147,8 +150,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             // Ensure profile exists if user is logged in
             if (session?.user?.id) {
+                setProfileLoading(true);
                 const profileData = await ensureProfileExists(session.user.id, session.user);
                 setProfile(profileData);
+                setProfileLoading(false);
+            } else {
+                setProfileLoading(false);
             }
 
             setLoading(false);
@@ -163,13 +170,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             // Ensure profile exists on auth change (login/signup)
             if (session?.user?.id) {
+                setProfileLoading(true);
                 // Small delay to allow trigger to create profile first
                 setTimeout(async () => {
                     const profileData = await ensureProfileExists(session.user.id, session.user);
                     setProfile(profileData);
+                    setProfileLoading(false);
                 }, 500);
             } else {
                 setProfile(null);
+                setProfileLoading(false);
             }
 
             setLoading(false);
@@ -177,27 +187,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         return () => subscription.unsubscribe();
     }, [isConfigured]);
-
-    const signUp = async (email: string, password: string, fullName?: string) => {
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    full_name: fullName || "",
-                },
-            },
-        });
-        return { error };
-    };
-
-    const signIn = async (email: string, password: string) => {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-        return { error };
-    };
 
     const signInWithGoogle = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
@@ -231,10 +220,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         profile,
         session,
         loading,
+        profileLoading,
         isConfigured,
         isProfileComplete: profile?.profile_completed ?? false,
-        signUp,
-        signIn,
         signInWithGoogle,
         signInWithLinkedIn,
         signOut,

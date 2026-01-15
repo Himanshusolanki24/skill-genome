@@ -328,6 +328,7 @@ router.post("/update-streak", async (req, res) => {
 
         if (streakData) {
             const lastActivity = streakData.last_activity_date;
+            const dayBeforeYesterday = new Date(Date.now() - 2 * 86400000).toISOString().split("T")[0];
 
             if (lastActivity === today) {
                 // Already active today, keep current streak
@@ -336,8 +337,13 @@ router.post("/update-streak", async (req, res) => {
             } else if (lastActivity === yesterday) {
                 // Consecutive day, increment streak
                 newStreak = streakData.current_streak + 1;
+            } else if (lastActivity === dayBeforeYesterday) {
+                // Missed one day, decrement streak by 1 (minimum 0)
+                newStreak = Math.max(0, streakData.current_streak - 1);
+            } else {
+                // Missed more than one day, reset streak to 1
+                newStreak = 1;
             }
-            // else: streak breaks, starts at 1
 
             longestStreak = Math.max(newStreak, streakData.longest_streak || 0);
         }

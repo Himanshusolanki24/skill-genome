@@ -17,106 +17,6 @@ const checkSupabaseConfig = (req, res, next) => {
 // Apply to all routes in this router
 router.use(checkSupabaseConfig);
 
-// Sign up with email and password
-router.post("/signup", async (req, res) => {
-    try {
-        const { email, password, fullName } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                error: "Email and password are required",
-            });
-        }
-
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    full_name: fullName || "",
-                },
-            },
-        });
-
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.message,
-            });
-        }
-
-        // If using supabaseAdmin, create user profile in database
-        if (supabaseAdmin && data.user) {
-            await supabaseAdmin.from("profiles").upsert({
-                id: data.user.id,
-                email: data.user.email,
-                full_name: fullName || "",
-                avatar_url: null,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-            });
-        }
-
-        res.json({
-            success: true,
-            data: {
-                user: data.user,
-                session: data.session,
-            },
-            message: data.session
-                ? "Signup successful!"
-                : "Please check your email to confirm your account.",
-        });
-    } catch (error) {
-        console.error("Signup error:", error);
-        res.status(500).json({
-            success: false,
-            error: "Internal server error during signup",
-        });
-    }
-});
-
-// Login with email and password
-router.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                error: "Email and password are required",
-            });
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (error) {
-            return res.status(401).json({
-                success: false,
-                error: error.message,
-            });
-        }
-
-        res.json({
-            success: true,
-            data: {
-                user: data.user,
-                session: data.session,
-            },
-        });
-    } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({
-            success: false,
-            error: "Internal server error during login",
-        });
-    }
-});
-
 // Get current user profile
 router.get("/user", async (req, res) => {
     try {
@@ -144,7 +44,7 @@ router.get("/user", async (req, res) => {
         let profile = null;
         if (supabaseAdmin) {
             const { data: profileData } = await supabaseAdmin
-                .from("profiles")
+                .from("users")
                 .select("*")
                 .eq("id", user.id)
                 .single();

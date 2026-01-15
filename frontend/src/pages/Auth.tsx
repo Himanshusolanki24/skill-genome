@@ -1,23 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NeuralBackground } from "@/components/NeuralBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-    Mail,
-    Lock,
-    Eye,
-    EyeOff,
-    User,
     Dna,
-    ArrowRight,
     Sparkles,
     Loader2,
     AlertCircle,
+    Shield,
+    Zap,
+    Target,
 } from "lucide-react";
-
-type AuthMode = "login" | "register";
 
 // Google Icon Component
 const GoogleIcon = () => (
@@ -41,7 +36,7 @@ const GoogleIcon = () => (
     </svg>
 );
 
-// LinkedIn Icon Component - Using white fill for visibility on blue background
+// LinkedIn Icon Component
 const LinkedInIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -49,16 +44,10 @@ const LinkedInIcon = () => (
 );
 
 const Auth = () => {
-    const [mode, setMode] = useState<AuthMode>("login");
-    const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<"google" | "linkedin" | null>(null);
 
-    const { user, signIn, signUp, signInWithGoogle, signInWithLinkedIn, isConfigured } = useAuth();
+    const { user, signInWithGoogle, signInWithLinkedIn, isConfigured } = useAuth();
     const navigate = useNavigate();
 
     // Redirect if already logged in
@@ -68,53 +57,31 @@ const Auth = () => {
         }
     }, [user, navigate]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setSuccessMessage(null);
-        setIsSubmitting(true);
-
-        try {
-            if (mode === "register") {
-                const { error } = await signUp(email, password, name);
-                if (error) {
-                    setError(error.message);
-                } else {
-                    setSuccessMessage("Account created! Redirecting to complete your profile...");
-                    setTimeout(() => {
-                        navigate("/dashboard");
-                    }, 1500);
-                }
-            } else {
-                const { error } = await signIn(email, password);
-                if (error) {
-                    setError(error.message);
-                } else {
-                    navigate("/dashboard");
-                }
-            }
-        } catch (err: any) {
-            setError(err.message || "An error occurred");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     const handleGoogleAuth = async () => {
         setError(null);
+        setIsLoading("google");
         const { error } = await signInWithGoogle();
         if (error) {
             setError(error.message);
+            setIsLoading(null);
         }
     };
 
     const handleLinkedInAuth = async () => {
         setError(null);
+        setIsLoading("linkedin");
         const { error } = await signInWithLinkedIn();
         if (error) {
             setError(error.message);
+            setIsLoading(null);
         }
     };
+
+    const features = [
+        { icon: Zap, text: "AI-Powered Skill Analysis" },
+        { icon: Target, text: "Personalized Learning Paths" },
+        { icon: Shield, text: "Secure & Private" },
+    ];
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
@@ -138,7 +105,7 @@ const Auth = () => {
                     opacity: [0.15, 0.3, 0.15],
                 }}
                 transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/15 rounded-full blur-3xl"
+                className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl"
             />
 
             <div className="relative z-10 w-full max-w-md px-4 py-8">
@@ -159,7 +126,7 @@ const Auth = () => {
                     </Link>
                 </motion.div>
 
-                {/* Main Card - Matching BuildGenome style */}
+                {/* Main Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -167,10 +134,14 @@ const Auth = () => {
                     className="relative group"
                 >
                     {/* Animated gradient border */}
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-primary/50 to-primary rounded-2xl opacity-75 blur-sm group-hover:opacity-100 transition duration-500" />
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-primary/50 to-primary rounded-2xl opacity-50 animate-pulse" />
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-75 blur-sm group-hover:opacity-100 transition duration-500" />
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-50 animate-pulse" />
 
-                    <div className="relative bg-card/90 backdrop-blur-xl rounded-2xl border border-border/50 p-8 overflow-hidden">
+                    <div className="relative bg-card/95 backdrop-blur-xl rounded-2xl border border-border/50 p-8 overflow-hidden">
+                        {/* Decorative Elements */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full" />
+                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-tr-full" />
+
                         <div className="relative z-10">
                             {/* Header */}
                             <div className="text-center mb-8">
@@ -178,25 +149,27 @@ const Auth = () => {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.2 }}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-4"
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4"
                                 >
-                                    <Sparkles className="w-3 h-3" />
-                                    <span>AI-Powered Growth</span>
+                                    <Sparkles className="w-4 h-4" />
+                                    <span>AI-Powered Growth Platform</span>
                                 </motion.div>
 
-                                <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-                                    {mode === "login" ? "Welcome Back" : "Create Account"}
+                                <h1 className="font-display text-3xl font-bold text-foreground mb-3">
+                                    Welcome to Skill Genome
                                 </h1>
-                                <p className="text-sm text-muted-foreground">
-                                    {mode === "login"
-                                        ? "Sign in to continue your skill evolution"
-                                        : "Start your journey to skill mastery"}
+                                <p className="text-muted-foreground">
+                                    Sign in to unlock your potential with AI-driven skill evolution
                                 </p>
                             </div>
 
                             {/* Supabase not configured warning */}
                             {!isConfigured && (
-                                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20"
+                                >
                                     <div className="flex items-start gap-3">
                                         <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                                         <div>
@@ -206,7 +179,7 @@ const Auth = () => {
                                             </p>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* Error Message */}
@@ -223,220 +196,75 @@ const Auth = () => {
                                 </motion.div>
                             )}
 
-                            {/* Success Message */}
-                            {successMessage && (
+                            {/* OAuth Buttons */}
+                            <div className="space-y-4">
                                 <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    <p className="text-sm text-green-400">{successMessage}</p>
+                                    <Button
+                                        onClick={handleGoogleAuth}
+                                        disabled={!isConfigured || isLoading !== null}
+                                        className="w-full h-14 bg-white hover:bg-gray-50 text-gray-800 font-medium rounded-xl transition-all duration-300 border border-gray-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isLoading === "google" ? (
+                                            <Loader2 className="w-5 h-5 animate-spin mr-3" />
+                                        ) : (
+                                            <GoogleIcon />
+                                        )}
+                                        <span className="ml-3 text-base">Continue with Google</span>
+                                    </Button>
                                 </motion.div>
-                            )}
 
-                            {/* Mode Toggle */}
-                            <div className="flex bg-background/50 rounded-xl p-1 mb-6 border border-border">
-                                <button
-                                    onClick={() => {
-                                        setMode("login");
-                                        setError(null);
-                                        setSuccessMessage(null);
-                                    }}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${mode === "login"
-                                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                                        : "text-muted-foreground hover:text-foreground"
-                                        }`}
+                                <motion.div
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    Sign In
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setMode("register");
-                                        setError(null);
-                                        setSuccessMessage(null);
-                                    }}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${mode === "register"
-                                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                                        : "text-muted-foreground hover:text-foreground"
-                                        }`}
-                                >
-                                    Sign Up
-                                </button>
+                                    <Button
+                                        onClick={handleLinkedInAuth}
+                                        disabled={!isConfigured || isLoading !== null}
+                                        className="w-full h-14 bg-[#0A66C2] hover:bg-[#004182] text-white font-medium rounded-xl transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isLoading === "linkedin" ? (
+                                            <Loader2 className="w-5 h-5 animate-spin mr-3" />
+                                        ) : (
+                                            <LinkedInIcon />
+                                        )}
+                                        <span className="ml-3 text-base">Continue with LinkedIn</span>
+                                    </Button>
+                                </motion.div>
                             </div>
 
-                            {/* Form - Email/Password FIRST */}
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <AnimatePresence mode="wait">
-                                    {mode === "register" && (
+                            {/* Features List */}
+                            <div className="mt-8 pt-6 border-t border-border/50">
+                                <div className="grid grid-cols-3 gap-4">
+                                    {features.map((feature, index) => (
                                         <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: "auto" }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.3 }}
+                                            key={index}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.3 + index * 0.1 }}
+                                            className="text-center"
                                         >
-                                            <label className="block text-sm font-medium text-foreground mb-2">
-                                                Full Name
-                                            </label>
-                                            <div className="relative">
-                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                                <input
-                                                    type="text"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                    placeholder="Enter your full name"
-                                                    className="w-full bg-background/50 border border-border rounded-xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
-                                                />
+                                            <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">
+                                                <feature.icon className="w-5 h-5 text-primary" />
                                             </div>
+                                            <p className="text-xs text-muted-foreground">{feature.text}</p>
                                         </motion.div>
-                                    )}
-                                </AnimatePresence>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-foreground mb-2">
-                                        Email Address
-                                    </label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Enter your email"
-                                            required
-                                            className="w-full bg-background/50 border border-border rounded-xl py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
-                                        />
-                                    </div>
+                                    ))}
                                 </div>
+                            </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-foreground mb-2">
-                                        Password
-                                    </label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Enter your password"
-                                            required
-                                            minLength={6}
-                                            className="w-full bg-background/50 border border-border rounded-xl py-3 pl-12 pr-12 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                                        >
-                                            {showPassword ? (
-                                                <EyeOff className="w-5 h-5" />
-                                            ) : (
-                                                <Eye className="w-5 h-5" />
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {mode === "login" && (
-                                    <div className="flex justify-end">
-                                        <Link
-                                            to="/forgot-password"
-                                            className="text-sm text-primary hover:text-primary/80 transition-colors"
-                                        >
-                                            Forgot password?
-                                        </Link>
-                                    </div>
-                                )}
-
-                                {/* Divider */}
-                                <div className="relative flex items-center py-2">
-                                    <div className="flex-1 border-t border-border"></div>
-                                    <span className="px-4 text-sm text-muted-foreground">
-                                        or continue with
-                                    </span>
-                                    <div className="flex-1 border-t border-border"></div>
-                                </div>
-
-                                {/* OAuth Buttons - Only Google and LinkedIn */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <motion.button
-                                        type="button"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={handleGoogleAuth}
-                                        disabled={!isConfigured}
-                                        className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-xl transition-all duration-300 border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <GoogleIcon />
-                                        <span>Google</span>
-                                    </motion.button>
-
-                                    <motion.button
-                                        type="button"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={handleLinkedInAuth}
-                                        disabled={!isConfigured}
-                                        className="flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <LinkedInIcon />
-                                        <span>LinkedIn</span>
-                                    </motion.button>
-                                </div>
-
-                                {/* Sign In Button */}
-                                <Button
-                                    type="submit"
-                                    variant="genome"
-                                    size="lg"
-                                    className="w-full group mt-2"
-                                    disabled={isSubmitting || !isConfigured}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="w-5 h-5 animate-spin" />
-                                            {mode === "login" ? "Signing In..." : "Creating Account..."}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {mode === "login" ? "Sign In" : "Create Account"}
-                                            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                                        </>
-                                    )}
-                                </Button>
-                            </form>
-
-                            {/* Footer */}
-                            <p className="text-center text-sm text-muted-foreground mt-6">
-                                {mode === "login" ? (
-                                    <>
-                                        Don't have an account?{" "}
-                                        <button
-                                            onClick={() => {
-                                                setMode("register");
-                                                setError(null);
-                                                setSuccessMessage(null);
-                                            }}
-                                            className="text-primary hover:text-primary/80 font-medium transition-colors"
-                                        >
-                                            Sign up
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        Already have an account?{" "}
-                                        <button
-                                            onClick={() => {
-                                                setMode("login");
-                                                setError(null);
-                                                setSuccessMessage(null);
-                                            }}
-                                            className="text-primary hover:text-primary/80 font-medium transition-colors"
-                                        >
-                                            Sign in
-                                        </button>
-                                    </>
-                                )}
+                            {/* Terms */}
+                            <p className="text-center text-xs text-muted-foreground mt-6">
+                                By signing in, you agree to our{" "}
+                                <Link to="/terms" className="text-primary hover:underline">
+                                    Terms of Service
+                                </Link>{" "}
+                                and{" "}
+                                <Link to="/privacy" className="text-primary hover:underline">
+                                    Privacy Policy
+                                </Link>
                             </p>
                         </div>
                     </div>
@@ -447,4 +275,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
