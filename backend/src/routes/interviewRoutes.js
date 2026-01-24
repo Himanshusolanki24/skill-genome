@@ -347,6 +347,21 @@ router.post("/save-results", async (req, res) => {
                 .eq("id", userId);
         });
 
+        // Record activity for heatmap
+        try {
+            const today = new Date().toISOString().split("T")[0];
+            await supabaseAdmin
+                .from("user_activity_log")
+                .insert({
+                    user_id: userId,
+                    activity_type: "interview_completed",
+                    activity_date: today,
+                    xp_earned: calculatedXp,
+                });
+        } catch (err) {
+            console.log("Activity log note:", err.message);
+        }
+
         res.json({
             success: true,
             data: {

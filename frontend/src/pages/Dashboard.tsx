@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -27,12 +27,13 @@ import {
   Trophy,
   AlertCircle,
   BookCheck,
-  RefreshCw,
+  Calendar,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { ContributionHeatmap } from "@/components/ContributionHeatmap";
+import { API_BASE_URL, parseApiResponse } from "@/lib/api";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
 
 interface InterviewResult {
   id: string;
@@ -67,9 +68,13 @@ interface ExtractedSkill {
   textColor: string;
 }
 
+interface ActivityData {
+  date: string;
+  count: number;
+}
+
 const Dashboard = () => {
   const { user, profile, isProfileComplete } = useAuth();
-  const location = useLocation();
   const [interviewResults, setInterviewResults] = useState<InterviewResult[]>([]);
   const [skillData, setSkillData] = useState<SkillData[]>([]);
   const [weeklyProgress, setWeeklyProgress] = useState<WeeklyData[]>([]);
@@ -82,9 +87,8 @@ const Dashboard = () => {
     overallScore: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [contributionData, setContributionData] = useState<Record<string, number>>({});
-  const [heatmapYear, setHeatmapYear] = useState(new Date().getFullYear());
+  const [activityData, setActivityData] = useState<ActivityData[]>([]);
+  const [heatmapLoading, setHeatmapLoading] = useState(true);
 
   // Get username or fallback
   const displayName = profile?.username || profile?.full_name?.split(" ")[0] || "there";
@@ -103,15 +107,31 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Refresh data when location changes (user navigates to dashboard)
-  // This ensures fresh data after completing interviews or tasks
   useEffect(() => {
     if (user?.id) {
       fetchDashboardData();
+      fetchActivityHeatmap();
     } else {
       setLoading(false);
+      setHeatmapLoading(false);
     }
-  }, [user?.id, extractedSkills, location.key]);
+  }, [user?.id, extractedSkills]);
+
+  const fetchActivityHeatmap = async () => {
+    if (!user?.id) return;
+    setHeatmapLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/daily-tasks/activity-heatmap/${user.id}`);
+      const data = await parseApiResponse(response);
+      if (data.success) {
+        setActivityData(data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching activity heatmap:", error);
+    } finally {
+      setHeatmapLoading(false);
+    }
+  };
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -145,84 +165,38 @@ const Dashboard = () => {
         }, 0) / interviewData.length;
 
         // Build skill data for radar chart - combine extracted skills with interview results
-        // Use case-insensitive matching to handle variations in skill names
-        const skillMap = new Map<string, { total: number; count: number; displayName: string }>();
-
-        // Helper function for case-insensitive matching
-        const normalizeSkillName = (name: string) => name.toLowerCase().trim();
+        const skillMap = new Map<string, { total: number; count: number }>();
 
         // First, add all extracted skills with 0 score
         extractedSkills.slice(0, 8).forEach((skillName) => {
-          const normalized = normalizeSkillName(skillName);
-          skillMap.set(normalized, { total: 0, count: 0, displayName: skillName });
+          skillMap.set(skillName, { total: 0, count: 0 });
         });
 
-        // Then, update with interview results using case-insensitive matching
+        // Then, update with interview results
         interviewData.forEach((interview) => {
-          // The interview.skill could be a single skill or comma-separated list
-          const interviewSkills = interview.skill.includes(",")
-            ? interview.skill.split(",").map(s => s.trim().replace(/\s*\+\d+\s*more$/, ''))
-            : [interview.skill];
-
+          const existing = skillMap.get(interview.skill) || { total: 0, count: 0 };
           const score = interview.total_questions > 0
             ? (interview.correct_answers / interview.total_questions) * 100
-            : (interview.score || 0); // Use score field if available (0-100)
-
-          interviewSkills.forEach(skillName => {
-            const normalized = normalizeSkillName(skillName);
-
-            // Check if we have this skill in our extracted skills (case-insensitive)
-            if (skillMap.has(normalized)) {
-              const existing = skillMap.get(normalized)!;
-              skillMap.set(normalized, {
-                ...existing,
-                total: existing.total + score,
-                count: existing.count + 1,
-              });
-            } else {
-              // Also try partial matching for skills like "React" matching "React.js"
-              for (const [key, value] of skillMap.entries()) {
-                if (normalized.includes(key) || key.includes(normalized)) {
-                  skillMap.set(key, {
-                    ...value,
-                    total: value.total + score,
-                    count: value.count + 1,
-                  });
-                  break;
-                }
-              }
-            }
+            : 0;
+          skillMap.set(interview.skill, {
+            total: existing.total + score,
+            count: existing.count + 1,
           });
         });
 
-        // If user has done interviews but some skills show 0, give them a minimum baseline
-        // This represents that the interview covered topics related to all skills
-        const hasInterviews = interviewData.length > 0;
-        const globalAvgScore = avgScore;
-
-        const skills: SkillData[] = Array.from(skillMap.entries()).map(([_, data]) => {
-          let value = data.count > 0 ? Math.round(data.total / data.count) : 0;
-          // If user has done interviews but this skill wasn't directly assessed,
-          // give a baseline score of 15% of the average (shows some indirect progress)
-          if (hasInterviews && value === 0 && globalAvgScore > 0) {
-            value = Math.round(globalAvgScore * 0.15);
-          }
-          return {
-            skill: data.displayName,
-            value,
-            fullMark: 100,
-          };
-        });
+        const skills: SkillData[] = Array.from(skillMap.entries()).map(([skill, data]) => ({
+          skill,
+          value: data.count > 0 ? Math.round(data.total / data.count) : 0,
+          fullMark: 100,
+        }));
         setSkillData(skills);
 
-        // Focus areas (lowest 3 skills from extracted skills only)
-        const extractedSkillSet = new Set(extractedSkills.slice(0, 8).map(normalizeSkillName));
-        const relevantSkills = skills.filter(s => extractedSkillSet.has(normalizeSkillName(s.skill)));
-        const sortedSkills = [...relevantSkills].sort((a, b) => a.value - b.value);
+        // Focus areas (lowest 3 skills)
+        const sortedSkills = [...skills].sort((a, b) => a.value - b.value);
         const focus: FocusArea[] = sortedSkills.slice(0, 3).map((s) => ({
           name: s.skill,
           level: s.value,
-          improvement: s.value > 0 ? `+${s.value}%` : "+0%",
+          improvement: "+0%", // Can be calculated from historical data
         }));
         setFocusAreas(focus);
 
@@ -267,28 +241,12 @@ const Dashboard = () => {
       }
       setWeeklyProgress(weekData);
 
-      // Build contribution data for heatmap (count activities per day)
-      const contributions: Record<string, number> = {};
-      interviewData.forEach((interview) => {
-        const date = new Date(interview.interview_date);
-        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-        contributions[dateKey] = (contributions[dateKey] || 0) + 1;
-      });
-      setContributionData(contributions);
-
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
-      setIsRefreshing(false);
     }
   };
-
-  // Manual refresh function
-  const handleRefresh = useCallback(() => {
-    setIsRefreshing(true);
-    fetchDashboardData();
-  }, [user?.id]);
 
   // Default data for new users
   const defaultSkillData: SkillData[] = profile?.skills?.slice(0, 8).map((skill) => ({
@@ -329,28 +287,14 @@ const Dashboard = () => {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-                  Welcome back, <span className="text-gradient-pink">{displayName}</span>
-                </h1>
-                <p className="text-muted-foreground">
-                  {stats.skillsMastered > 0
-                    ? `You've mastered ${stats.skillsMastered} skill${stats.skillsMastered > 1 ? 's' : ''}! Keep evolving.`
-                    : "Start your learning journey by taking an interview!"}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="text-muted-foreground hover:text-foreground"
-                title="Refresh data"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-              </Button>
-            </div>
+            <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+              Welcome back, <span className="text-gradient-pink">{displayName}</span>
+            </h1>
+            <p className="text-muted-foreground">
+              {stats.skillsMastered > 0
+                ? `You've mastered ${stats.skillsMastered} skill${stats.skillsMastered > 1 ? 's' : ''}! Keep evolving.`
+                : "Start your learning journey by taking an interview!"}
+            </p>
           </motion.div>
 
           {/* Stats Grid */}
@@ -414,35 +358,6 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">Overall Score</p>
                 </div>
               </div>
-            </Card>
-          </motion.div>
-
-          {/* Contribution Heatmap */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="mb-8"
-          >
-            <Card variant="genome">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookCheck className="w-5 h-5 text-primary" />
-                  Contribution Activity
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {Object.keys(contributionData).length > 0
-                    ? `${Object.values(contributionData).reduce((a, b) => a + b, 0)} contributions in ${heatmapYear}`
-                    : "Complete interviews and tasks to build your activity history"}
-                </p>
-              </CardHeader>
-              <CardContent>
-                <ContributionHeatmap
-                  data={contributionData}
-                  year={heatmapYear}
-                  onYearChange={setHeatmapYear}
-                />
-              </CardContent>
             </Card>
           </motion.div>
 
@@ -745,6 +660,29 @@ const Dashboard = () => {
               </Card>
             </motion.div>
           </div>
+
+          {/* Activity Heatmap - Full Width */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="mt-6"
+          >
+            <Card variant="genome">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  Activity Overview
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Your learning activity over the past year
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ActivityHeatmap data={activityData} loading={heatmapLoading} />
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </main>
     </div>
