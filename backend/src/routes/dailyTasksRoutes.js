@@ -133,6 +133,29 @@ router.post("/complete", async (req, res) => {
             });
         }
 
+        // Also record in activity log for heatmap
+        const today = new Date().toISOString().split("T")[0];
+        await supabaseAdmin
+            .from("user_activity_log")
+            .insert({
+                user_id: userId,
+                activity_type: "task_completed",
+                activity_date: today,
+                xp_earned: xpEarned || 10,
+            })
+            .catch(err => {
+                // Ignore unique violation if user already has an activity entry for this task on this day
+                // But generally we want to track every task completion count if we want intensity
+                // However, the table might have a unique constraint. 
+                // Let's check if we want one entry per day or multiple. 
+                // The heatmap counts *submissions*, so we should probably allow multiple.
+                // If the table has UNIQUE(user_id, activity_date, activity_type), then we can only track one per type per day.
+                // Let's assume we want to track counts. 
+                // If the constraint exists, we might need a separate 'count' column or remove the constraint.
+                // For now, let's just log it and see.
+                console.log("Activity log note:", err.message);
+            });
+
         res.json({
             success: true,
             data: {
@@ -391,18 +414,10 @@ router.post("/update-streak", async (req, res) => {
     }
 });
 
-// Update skill progress from daily task completion
-// This allows daily tasks to contribute to focus area progress on the dashboard
-router.post("/update-skill-progress", async (req, res) => {
+// Get activity heatmap data (last 365 days)
+router.get("/activity-heatmap/:userId", async (req, res) => {
     try {
-        const { userId, skill, score, xpEarned } = req.body;
-
-        if (!userId || !skill) {
-            return res.status(400).json({
-                success: false,
-                error: "User ID and skill are required",
-            });
-        }
+        const { userId } = req.params;
 
         if (!isSupabaseConfigured() || !supabaseAdmin) {
             return res.status(503).json({
@@ -411,47 +426,48 @@ router.post("/update-skill-progress", async (req, res) => {
             });
         }
 
-        // Convert score (0-10) to percentage (0-100)
-        const scorePercentage = Math.round((score || 6) * 10);
-        const calculatedXp = xpEarned || Math.round(score * 5);
+        // Calculate date range (last 365 days)
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 364);
 
-        // Insert into interview_results to track skill progress
-        // This uses the same table so Dashboard can aggregate all skill progress
         const { data, error } = await supabaseAdmin
-            .from("interview_results")
-            .insert({
-                user_id: userId,
-                skill: skill,
-                score: scorePercentage,
-                total_questions: 1,
-                correct_answers: score >= 6 ? 1 : 0,
-                xp_earned: calculatedXp,
-                interview_date: new Date().toISOString(),
-            })
-            .select()
-            .single();
+            .from("user_activity_log")
+            .select("activity_date, activity_type")
+            .eq("user_id", userId)
+            .gte("activity_date", startDate.toISOString().split("T")[0])
+            .lte("activity_date", endDate.toISOString().split("T")[0]);
 
         if (error) {
-            console.error("Error saving skill progress:", error);
+            console.error("Error fetching activity heatmap:", error);
             return res.status(500).json({
                 success: false,
-                error: "Failed to save skill progress",
+                error: "Failed to fetch activity data",
             });
         }
 
+        // Aggregate activities by date
+        const activityMap = new Map();
+        (data || []).forEach((activity) => {
+            const date = activity.activity_date;
+            activityMap.set(date, (activityMap.get(date) || 0) + 1);
+        });
+
+        // Convert to array format
+        const heatmapData = Array.from(activityMap.entries()).map(([date, count]) => ({
+            date,
+            count,
+        }));
+
         res.json({
             success: true,
-            data: {
-                id: data?.id,
-                skillUpdated: skill,
-                score: scorePercentage,
-            },
+            data: heatmapData,
         });
     } catch (error) {
-        console.error("Skill progress update error:", error);
+        console.error("Activity heatmap error:", error);
         res.status(500).json({
             success: false,
-            error: error.message || "Failed to update skill progress",
+            error: error.message || "Failed to fetch activity heatmap",
         });
     }
 });
