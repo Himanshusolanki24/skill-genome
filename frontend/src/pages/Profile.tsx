@@ -525,7 +525,7 @@ const Profile = () => {
               </Card>
             </motion.div>
 
-            {/* Theme Section */}
+            {/* Feedback Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -535,51 +535,144 @@ const Profile = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                      <Palette className="w-6 h-6 text-purple-400" />
+                      <Mail className="w-6 h-6 text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-display font-semibold text-foreground">Appearance</h3>
-                      <p className="text-sm text-muted-foreground">Customize your look</p>
+                      <h3 className="text-lg font-display font-semibold text-foreground">Send Feedback</h3>
+                      <p className="text-sm text-muted-foreground">Help us improve SkillGenome</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setTheme("dark")}
-                      className={`p-6 rounded-2xl text-center transition-all ${theme === "dark"
-                        ? "bg-gradient-to-br from-primary/20 to-purple-500/20 border-2 border-primary"
-                        : "bg-white/5 border border-white/10 hover:border-white/20"
-                        }`}
-                    >
-                      <div className="w-14 h-14 rounded-2xl bg-[#0a0a0f] border border-white/20 mx-auto mb-3 flex items-center justify-center">
-                        <Moon className={`w-6 h-6 ${theme === "dark" ? "text-primary" : "text-muted-foreground"}`} />
-                      </div>
-                      <p className={`font-semibold ${theme === "dark" ? "text-primary" : "text-foreground"}`}>Dark</p>
-                      <p className="text-xs text-muted-foreground mt-1">Easy on eyes</p>
-                    </motion.button>
-
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setTheme("light")}
-                      className={`p-6 rounded-2xl text-center transition-all ${theme === "light"
-                        ? "bg-gradient-to-br from-primary/20 to-purple-500/20 border-2 border-primary"
-                        : "bg-white/5 border border-white/10 hover:border-white/20"
-                        }`}
-                    >
-                      <div className="w-14 h-14 rounded-2xl bg-white border border-gray-200 mx-auto mb-3 flex items-center justify-center">
-                        <Sun className={`w-6 h-6 ${theme === "light" ? "text-primary" : "text-gray-400"}`} />
-                      </div>
-                      <p className={`font-semibold ${theme === "light" ? "text-primary" : "text-foreground"}`}>Light</p>
-                      <p className="text-xs text-muted-foreground mt-1">Classic look</p>
-                    </motion.button>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Feedback Type</label>
+                      <select
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select feedback type</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="improvement">Improvement Suggestion</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Your Feedback</label>
+                      <textarea
+                        placeholder="Tell us what you think..."
+                        rows={4}
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 resize-none transition-colors"
+                      />
+                    </div>
+                    <Button variant="genome" className="w-full">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Submit Feedback
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
           </div>
+{/* Feedback Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Card variant="genome" className="h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                      <Mail className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-display font-semibold text-foreground">Send Feedback</h3>
+                      <p className="text-sm text-muted-foreground">Help us improve SkillGenome</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Feedback Type</label>
+                      <select
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select feedback type</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="improvement">Improvement Suggestion</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Your Feedback</label>
+                      <textarea
+                        placeholder="Tell us what you think..."
+                        rows={4}
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 resize-none transition-colors"
+                      />
+                    </div>
+                    <Button variant="genome" className="w-full">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Submit Feedback
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+            {/* Feedback Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Card variant="genome" className="h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                      <Mail className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-display font-semibold text-foreground">Send Feedback</h3>
+                      <p className="text-sm text-muted-foreground">Help us improve SkillGenome</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Feedback Type</label>
+                      <select
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select feedback type</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="improvement">Improvement Suggestion</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Your Feedback</label>
+                      <textarea
+                        placeholder="Tell us what you think..."
+                        rows={4}
+                        className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 resize-none transition-colors"
+                      />
+                    </div>
+                    <Button variant="genome" className="w-full">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Submit Feedback
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
 
           {/* Save Button */}
           {hasChanges && (
