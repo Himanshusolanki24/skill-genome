@@ -8,7 +8,12 @@ const GITHUB_API = "https://api.github.com";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 // Log token status at startup (don't log the actual token for security)
-console.log(`GitHub Token configured: ${GITHUB_TOKEN ? 'Yes (length: ' + GITHUB_TOKEN.length + ')' : 'No'}`);
+if (GITHUB_TOKEN) {
+    const maskedToken = GITHUB_TOKEN.substring(0, 4) + '...' + GITHUB_TOKEN.substring(GITHUB_TOKEN.length - 4);
+    console.log(`GitHub Token configured: Yes (${maskedToken})`);
+} else {
+    console.log('GitHub Token configured: No (Rate limits will be restricted)');
+}
 
 
 // Build headers with optional authentication
