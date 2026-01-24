@@ -12,6 +12,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('TypeScript', 'beginner', 'Define a tuple type for [string, number].', 'Use [string, number] as the type', 10),
 ('TypeScript', 'beginner', 'Create an enum for days of the week.', 'Use enum DayOfWeek { Monday, Tuesday, ... }', 10),
 ('TypeScript', 'beginner', 'Write a function with a default parameter value.', 'Use param: type = defaultValue', 10);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('TypeScript', 'beginner', 'Declare a variable of type number and assign it a value.', 'Use : number for type annotation', 10),
+('TypeScript', 'beginner', 'Create a function that accepts a string and returns its length.', 'Specify parameter and return types', 10),
+('TypeScript', 'beginner', 'Define an array that can store only strings.', 'Use string[] type', 10),
+('TypeScript', 'beginner', 'Create a tuple with a number and a string.', 'Use fixed-length tuple syntax', 10),
+('TypeScript', 'beginner', 'Declare a variable using union types (string or number).', 'Use | operator', 10),
+('TypeScript', 'beginner', 'Write a function that returns void.', 'Use void return type', 10),
+('TypeScript', 'beginner', 'Create an interface for a User with name and age.', 'Use interface keyword', 10),
+('TypeScript', 'beginner', 'Use a type alias to define a boolean type.', 'Use type keyword', 10),
+('TypeScript', 'beginner', 'Declare an enum for user roles.', 'Use enum keyword', 10),
+('TypeScript', 'beginner', 'Write a function with an optional parameter.', 'Use ? for optional parameters', 10),
+('TypeScript', 'beginner', 'Create a readonly property in an interface.', 'Use readonly modifier', 10),
+('TypeScript', 'beginner', 'Declare a variable with the any type.', 'Use any keyword', 10),
+('TypeScript', 'beginner', 'Create a function that returns a boolean.', 'Specify boolean return type', 10),
+('TypeScript', 'beginner', 'Define an object type with name and email.', 'Use inline type annotation', 10),
+('TypeScript', 'beginner', 'Use type inference to assign a number.', 'Let TypeScript infer the type', 10),
+('TypeScript', 'beginner', 'Create an array of numbers using generics.', 'Use Array<number>', 10),
+('TypeScript', 'beginner', 'Write a function that accepts a tuple.', 'Define tuple in parameters', 10),
+('TypeScript', 'beginner', 'Declare a variable with null and undefined types.', 'Use union with null | undefined', 10),
+('TypeScript', 'beginner', 'Create a function that takes no arguments and returns a string.', 'Specify return type', 10),
+('TypeScript', 'beginner', 'Use const assertion on an object.', 'Use as const syntax', 10);
 
 -- INTERMEDIATE (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -25,6 +46,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('TypeScript', 'intermediate', 'Implement a generic interface with constraints.', 'Use <T extends SomeType>', 20),
 ('TypeScript', 'intermediate', 'Create a readonly array and object type.', 'Use readonly keyword or Readonly<T>', 20),
 ('TypeScript', 'intermediate', 'Write a type that extracts keys of a specific value type from an object.', 'Use conditional types with keyof', 20);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('TypeScript', 'intermediate', 'Create a generic function that returns the same type it receives.', 'Use <T> generic syntax', 20),
+('TypeScript', 'intermediate', 'Implement an interface that extends another interface.', 'Use extends keyword', 20),
+('TypeScript', 'intermediate', 'Create a function overload for a function with multiple signatures.', 'Define multiple function signatures', 20),
+('TypeScript', 'intermediate', 'Use a mapped type to make all properties optional.', 'Use keyof and ?', 20),
+('TypeScript', 'intermediate', 'Create a type guard function.', 'Use parameter is Type syntax', 20),
+('TypeScript', 'intermediate', 'Use keyof operator on an interface.', 'Extract keys as union', 20),
+('TypeScript', 'intermediate', 'Create a generic interface.', 'Use generics with interface', 20),
+('TypeScript', 'intermediate', 'Implement a class with public, private, and protected members.', 'Use access modifiers', 20),
+('TypeScript', 'intermediate', 'Create a utility type using Pick.', 'Pick selected properties', 20),
+('TypeScript', 'intermediate', 'Use Partial utility type on an interface.', 'Partial<T>', 20),
+('TypeScript', 'intermediate', 'Create a discriminated union.', 'Use literal types with unions', 20),
+('TypeScript', 'intermediate', 'Write a function that accepts unknown type safely.', 'Use type narrowing', 20),
+('TypeScript', 'intermediate', 'Use Record type to define object structure.', 'Record<Keys, Type>', 20),
+('TypeScript', 'intermediate', 'Create a readonly array type.', 'Use ReadonlyArray<T>', 20),
+('TypeScript', 'intermediate', 'Implement a class that implements an interface.', 'Use implements keyword', 20),
+('TypeScript', 'intermediate', 'Use Exclude utility type.', 'Exclude<T, U>', 20),
+('TypeScript', 'intermediate', 'Create a function using rest parameters with types.', 'Use ...args syntax', 20),
+('TypeScript', 'intermediate', 'Define a function returning a Promise of number.', 'Use Promise<number>', 20),
+('TypeScript', 'intermediate', 'Use ReturnType utility on a function.', 'ReturnType<typeof fn>', 20),
+('TypeScript', 'intermediate', 'Create a type from a constant object.', 'Use typeof operator', 20);
 
 -- ADVANCED (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -38,3 +80,24 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('TypeScript', 'advanced', 'Implement a Pick type from scratch without using built-in.', 'Use mapped types with key filtering', 30),
 ('TypeScript', 'advanced', 'Create a type for deep partial objects.', 'Recursively apply Partial to nested objects', 30),
 ('TypeScript', 'advanced', 'Implement variadic tuple types for a zip function.', 'Use spread in tuple types', 30);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('TypeScript', 'advanced', 'Create a deep readonly utility type.', 'Use recursive mapped types', 30),
+('TypeScript', 'advanced', 'Implement a generic constraint on a function.', 'Use extends keyword in generics', 30),
+('TypeScript', 'advanced', 'Create a conditional type.', 'Use T extends U ? X : Y', 30),
+('TypeScript', 'advanced', 'Implement a type-safe event emitter.', 'Use generics and mapped types', 30),
+('TypeScript', 'advanced', 'Create a custom utility type similar to Omit.', 'Use Exclude and keyof', 30),
+('TypeScript', 'advanced', 'Infer function argument types using conditional types.', 'Use infer keyword', 30),
+('TypeScript', 'advanced', 'Create a strongly typed Redux action pattern.', 'Use discriminated unions', 30),
+('TypeScript', 'advanced', 'Implement a fluent API with method chaining.', 'Return this from methods', 30),
+('TypeScript', 'advanced', 'Create a type-safe API response wrapper.', 'Use generics and interfaces', 30),
+('TypeScript', 'advanced', 'Build a recursive JSON type definition.', 'Use recursive type aliases', 30),
+('TypeScript', 'advanced', 'Create a compile-time string literal validator.', 'Use template literal types', 30),
+('TypeScript', 'advanced', 'Implement nominal typing using branding.', 'Use intersection with unique symbol', 30),
+('TypeScript', 'advanced', 'Create a strongly typed form validation schema.', 'Use mapped and conditional types', 30),
+('TypeScript', 'advanced', 'Design a type-safe dependency injection container.', 'Use generics and maps', 30),
+('TypeScript', 'advanced', 'Implement a generic singleton pattern.', 'Use static generic methods', 30),
+('TypeScript', 'advanced', 'Create a type that extracts async return types.', 'Use Awaited utility', 30),
+('TypeScript', 'advanced', 'Model a finite state machine with types.', 'Use union and mapped types', 30),
+('TypeScript', 'advanced', 'Create a type-safe middleware pipeline.', 'Use variadic tuple types', 30),
+('TypeScript', 'advanced', 'Enforce exact object shapes using types.', 'Prevent excess properties', 30),
+('TypeScript', 'advanced', 'Create a compile-time route parameter extractor.', 'Use template literal inference', 30);

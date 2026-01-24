@@ -12,6 +12,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('CSS', 'beginner', 'Apply a hover effect that changes background color.', 'Use selector:hover { }', 10),
 ('CSS', 'beginner', 'Remove the underline from links.', 'Use text-decoration: none', 10),
 ('CSS', 'beginner', 'Set a background image on the body.', 'Use background-image: url()', 10);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('CSS', 'beginner', 'Apply a background color to a div.', 'Use background-color property', 10),
+('CSS', 'beginner', 'Change text color of a paragraph.', 'Use color property', 10),
+('CSS', 'beginner', 'Set font size of text.', 'Use font-size property', 10),
+('CSS', 'beginner', 'Center text inside a div.', 'Use text-align: center', 10),
+('CSS', 'beginner', 'Add margin to an element.', 'Use margin property', 10),
+('CSS', 'beginner', 'Add padding inside an element.', 'Use padding property', 10),
+('CSS', 'beginner', 'Set width and height of a box.', 'Use width and height', 10),
+('CSS', 'beginner', 'Add a border to an element.', 'Use border property', 10),
+('CSS', 'beginner', 'Make text bold.', 'Use font-weight', 10),
+('CSS', 'beginner', 'Change font family of text.', 'Use font-family', 10),
+('CSS', 'beginner', 'Remove underline from a link.', 'Use text-decoration: none', 10),
+('CSS', 'beginner', 'Align an element to the center using margin.', 'Use margin: auto', 10),
+('CSS', 'beginner', 'Make an image responsive.', 'Use max-width: 100%', 10),
+('CSS', 'beginner', 'Change background color on hover.', 'Use :hover pseudo-class', 10),
+('CSS', 'beginner', 'Hide an element from display.', 'Use display: none', 10),
+('CSS', 'beginner', 'Make a list display horizontally.', 'Use display: inline or flex', 10),
+('CSS', 'beginner', 'Change cursor to pointer.', 'Use cursor property', 10),
+('CSS', 'beginner', 'Set line height for text.', 'Use line-height', 10),
+('CSS', 'beginner', 'Add box shadow to an element.', 'Use box-shadow', 10),
+('CSS', 'beginner', 'Make text uppercase.', 'Use text-transform', 10);
 
 -- INTERMEDIATE (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -25,6 +46,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('CSS', 'intermediate', 'Create a navigation bar that sticks to the top.', 'Use position: sticky or fixed', 20),
 ('CSS', 'intermediate', 'Build a CSS-only dropdown menu.', 'Use :hover on parent to show child', 20),
 ('CSS', 'intermediate', 'Create custom CSS variables and use them.', 'Define with --name, use with var(--name)', 20);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('CSS', 'intermediate', 'Create a flex container.', 'Use display: flex', 20),
+('CSS', 'intermediate', 'Align items horizontally using flexbox.', 'Use justify-content', 20),
+('CSS', 'intermediate', 'Align items vertically using flexbox.', 'Use align-items', 20),
+('CSS', 'intermediate', 'Create a responsive grid layout.', 'Use CSS Grid', 20),
+('CSS', 'intermediate', 'Create a two-column layout.', 'Use grid or flex', 20),
+('CSS', 'intermediate', 'Implement sticky header.', 'Use position: sticky', 20),
+('CSS', 'intermediate', 'Create a dropdown menu using CSS.', 'Use :hover and position', 20),
+('CSS', 'intermediate', 'Animate an element using transition.', 'Use transition property', 20),
+('CSS', 'intermediate', 'Create a keyframe animation.', 'Use @keyframes', 20),
+('CSS', 'intermediate', 'Use media queries for responsiveness.', 'Use @media rule', 20),
+('CSS', 'intermediate', 'Create a card layout.', 'Use box model and shadow', 20),
+('CSS', 'intermediate', 'Control element stacking order.', 'Use z-index', 20),
+('CSS', 'intermediate', 'Create a circular image.', 'Use border-radius: 50%', 20),
+('CSS', 'intermediate', 'Use pseudo-elements before and after.', 'Use ::before and ::after', 20),
+('CSS', 'intermediate', 'Create a modal overlay.', 'Use position: fixed', 20),
+('CSS', 'intermediate', 'Use overflow to control scrolling.', 'Use overflow property', 20),
+('CSS', 'intermediate', 'Implement CSS variables.', 'Use --variable-name', 20),
+('CSS', 'intermediate', 'Style form input focus state.', 'Use :focus pseudo-class', 20),
+('CSS', 'intermediate', 'Create an image overlay effect.', 'Use position and opacity', 20),
+('CSS', 'intermediate', 'Implement responsive typography.', 'Use relative units', 20);
 
 -- ADVANCED (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -38,3 +80,24 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('CSS', 'advanced', 'Create a glassmorphism effect.', 'Use backdrop-filter: blur with transparency', 30),
 ('CSS', 'advanced', 'Build a CSS-only toggle switch.', 'Use checkbox with :checked pseudo-class', 30),
 ('CSS', 'advanced', 'Create complex shapes using clip-path polygon.', 'Define points as percentage coordinates', 30);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('CSS', 'advanced', 'Build a full layout using CSS Grid.', 'Use grid-template-areas', 30),
+('CSS', 'advanced', 'Create a dark mode using CSS variables.', 'Toggle variables', 30),
+('CSS', 'advanced', 'Implement a CSS-only accordion.', 'Use checkbox hack', 30),
+('CSS', 'advanced', 'Create a complex animation timeline.', 'Use multiple keyframes', 30),
+('CSS', 'advanced', 'Design a glassmorphism UI.', 'Use backdrop-filter', 30),
+('CSS', 'advanced', 'Optimize CSS for performance.', 'Reduce repaint and reflow', 30),
+('CSS', 'advanced', 'Create a masonry layout.', 'Use grid-auto-flow', 30),
+('CSS', 'advanced', 'Implement a responsive navbar.', 'Combine flex and media queries', 30),
+('CSS', 'advanced', 'Create a loading spinner animation.', 'Use keyframes and transform', 30),
+('CSS', 'advanced', 'Use clamp() for responsive sizing.', 'Use clamp(min, preferred, max)', 30),
+('CSS', 'advanced', 'Create a parallax scrolling effect.', 'Use background-attachment', 30),
+('CSS', 'advanced', 'Design accessible focus styles.', 'Use :focus-visible', 30),
+('CSS', 'advanced', 'Implement container queries.', 'Use @container', 30),
+('CSS', 'advanced', 'Create a CSS-only tooltip.', 'Use pseudo-elements', 30),
+('CSS', 'advanced', 'Build a responsive image gallery.', 'Use grid and auto-fit', 30),
+('CSS', 'advanced', 'Create a neumorphism UI component.', 'Use layered shadows', 30),
+('CSS', 'advanced', 'Implement text gradient effect.', 'Use background-clip: text', 30),
+('CSS', 'advanced', 'Create an adaptive layout without media queries.', 'Use flex and grid auto', 30),
+('CSS', 'advanced', 'Design a CSS-only toggle switch.', 'Use input and labels', 30),
+('CSS', 'advanced', 'Build a print-specific stylesheet.', 'Use print media queries', 30);

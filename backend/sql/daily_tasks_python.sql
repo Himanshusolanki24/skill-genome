@@ -12,6 +12,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('Python', 'beginner', 'Take user input and print it.', 'Use input() function', 10),
 ('Python', 'beginner', 'Create a string and convert it to uppercase.', 'Use .upper() method', 10),
 ('Python', 'beginner', 'Write a function with a default parameter.', 'Use def func(param=default):', 10);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Python', 'beginner', 'Write a Python program that prints Hello World.', 'Use print()', 10),
+('Python', 'beginner', 'Declare a variable and assign an integer value.', 'No type declaration needed', 10),
+('Python', 'beginner', 'Take user input from the console.', 'Use input()', 10),
+('Python', 'beginner', 'Convert user input to an integer.', 'Use int()', 10),
+('Python', 'beginner', 'Add two numbers provided by the user.', 'Use arithmetic operators', 10),
+('Python', 'beginner', 'Check whether a number is even or odd.', 'Use modulo operator', 10),
+('Python', 'beginner', 'Write a program using if-else conditions.', 'Use if keyword', 10),
+('Python', 'beginner', 'Create a list of numbers.', 'Use square brackets', 10),
+('Python', 'beginner', 'Access elements of a list.', 'Use index positions', 10),
+('Python', 'beginner', 'Find the length of a list.', 'Use len()', 10),
+('Python', 'beginner', 'Iterate through a list using a for loop.', 'Use for loop', 10),
+('Python', 'beginner', 'Create a tuple and access its elements.', 'Tuples are immutable', 10),
+('Python', 'beginner', 'Create a dictionary with key-value pairs.', 'Use curly braces', 10),
+('Python', 'beginner', 'Access values from a dictionary.', 'Use keys', 10),
+('Python', 'beginner', 'Write a function that returns a value.', 'Use def and return', 10),
+('Python', 'beginner', 'Call a function with arguments.', 'Pass parameters', 10),
+('Python', 'beginner', 'Create a string and print it.', 'Use quotes', 10),
+('Python', 'beginner', 'Find the length of a string.', 'Use len()', 10),
+('Python', 'beginner', 'Concatenate two strings.', 'Use + operator', 10),
+('Python', 'beginner', 'Use a while loop to print numbers.', 'Use while keyword', 10);
 
 -- INTERMEDIATE (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -25,6 +46,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('Python', 'intermediate', 'Work with regular expressions using re module.', 'Use re.match(), re.search(), re.findall()', 20),
 ('Python', 'intermediate', 'Create a generator function using yield.', 'Yield pauses and returns value', 20),
 ('Python', 'intermediate', 'Use context managers with the with statement.', 'with open() as f:', 20);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Python', 'intermediate', 'Write a function that removes duplicates from a list.', 'Use set()', 20),
+('Python', 'intermediate', 'Reverse a list without using built-in reverse.', 'Use slicing or loop', 20),
+('Python', 'intermediate', 'Count frequency of elements in a list.', 'Use dictionary', 20),
+('Python', 'intermediate', 'Check if a string is a palindrome.', 'Compare string with reverse', 20),
+('Python', 'intermediate', 'Use list comprehension to create a new list.', 'Use concise syntax', 20),
+('Python', 'intermediate', 'Sort a list of numbers.', 'Use sorted()', 20),
+('Python', 'intermediate', 'Handle exceptions using try-except.', 'Catch errors', 20),
+('Python', 'intermediate', 'Read data from a file.', 'Use open() with read', 20),
+('Python', 'intermediate', 'Write data to a file.', 'Use write() method', 20),
+('Python', 'intermediate', 'Use lambda function.', 'Anonymous function', 20),
+('Python', 'intermediate', 'Filter a list using filter().', 'Use lambda', 20),
+('Python', 'intermediate', 'Map a function to a list.', 'Use map()', 20),
+('Python', 'intermediate', 'Use enumerate in a loop.', 'Get index and value', 20),
+('Python', 'intermediate', 'Use zip to combine lists.', 'Pair elements', 20),
+('Python', 'intermediate', 'Create a class with attributes.', 'Use class keyword', 20),
+('Python', 'intermediate', 'Create an object from a class.', 'Instantiate class', 20),
+('Python', 'intermediate', 'Implement inheritance.', 'Use parent class', 20),
+('Python', 'intermediate', 'Override a method in subclass.', 'Use same method name', 20),
+('Python', 'intermediate', 'Use __init__ constructor.', 'Initialize attributes', 20),
+('Python', 'intermediate', 'Use modules and import statements.', 'Use import keyword', 20);
 
 -- ADVANCED (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -38,3 +80,24 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('Python', 'advanced', 'Implement memoization using functools.', 'Use @functools.lru_cache', 30),
 ('Python', 'advanced', 'Create a dataclass with validation.', 'Use @dataclass and __post_init__', 30),
 ('Python', 'advanced', 'Implement the observer pattern.', 'Subjects notify observers of changes', 30);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Python', 'advanced', 'Implement a decorator function.', 'Use wrapper function', 30),
+('Python', 'advanced', 'Create a generator using yield.', 'Use yield keyword', 30),
+('Python', 'advanced', 'Implement context manager using with.', 'Use __enter__ and __exit__', 30),
+('Python', 'advanced', 'Use multithreading in Python.', 'Use threading module', 30),
+('Python', 'advanced', 'Use multiprocessing for CPU-bound tasks.', 'Use multiprocessing module', 30),
+('Python', 'advanced', 'Implement memoization using decorators.', 'Use cache dictionary', 30),
+('Python', 'advanced', 'Build a REST API using Flask.', 'Define routes', 30),
+('Python', 'advanced', 'Build a REST API using FastAPI.', 'Use async endpoints', 30),
+('Python', 'advanced', 'Handle asynchronous code using asyncio.', 'Use async and await', 30),
+('Python', 'advanced', 'Parse JSON data in Python.', 'Use json module', 30),
+('Python', 'advanced', 'Serialize objects using pickle.', 'Use pickle module', 30),
+('Python', 'advanced', 'Implement a singleton design pattern.', 'Use class-level instance', 30),
+('Python', 'advanced', 'Optimize code using profiling.', 'Use cProfile', 30),
+('Python', 'advanced', 'Work with regular expressions.', 'Use re module', 30),
+('Python', 'advanced', 'Implement unit tests using unittest.', 'Use unittest framework', 30),
+('Python', 'advanced', 'Use pytest for testing.', 'Write test functions', 30),
+('Python', 'advanced', 'Connect to a database using Python.', 'Use DB-API', 30),
+('Python', 'advanced', 'Implement ORM using SQLAlchemy.', 'Define models', 30),
+('Python', 'advanced', 'Build a web scraper.', 'Use requests and BeautifulSoup', 30),
+('Python', 'advanced', 'Deploy a Python application.', 'Use WSGI server', 30);
