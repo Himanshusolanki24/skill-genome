@@ -12,6 +12,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('C', 'beginner', 'Create a program using a while loop to sum numbers.', 'Initialize sum, loop while condition', 10),
 ('C', 'beginner', 'Write a program that finds the largest of three numbers.', 'Use nested if-else or logical operators', 10),
 ('C', 'beginner', 'Create a program that calculates factorial using a loop.', 'Multiply 1*2*3*...*n', 10);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('C', 'beginner', 'Write a C program that prints Hello World.', 'Use printf()', 10),
+('C', 'beginner', 'Declare and initialize an integer variable.', 'Use int keyword', 10),
+('C', 'beginner', 'Take user input using scanf.', 'Use & operator', 10),
+('C', 'beginner', 'Add two numbers entered by the user.', 'Use arithmetic operators', 10),
+('C', 'beginner', 'Check whether a number is even or odd.', 'Use modulo operator', 10),
+('C', 'beginner', 'Write a program to find the largest of two numbers.', 'Use if-else', 10),
+('C', 'beginner', 'Write a program to print numbers from 1 to 10.', 'Use for loop', 10),
+('C', 'beginner', 'Write a program to calculate the factorial of a number.', 'Use loop', 10),
+('C', 'beginner', 'Declare an array of integers.', 'Use square brackets', 10),
+('C', 'beginner', 'Access elements of an array.', 'Use index positions', 10),
+('C', 'beginner', 'Find the sum of elements in an array.', 'Use loop', 10),
+('C', 'beginner', 'Declare a string using char array.', 'Use char[]', 10),
+('C', 'beginner', 'Find the length of a string.', 'Use strlen()', 10),
+('C', 'beginner', 'Copy one string to another.', 'Use strcpy()', 10),
+('C', 'beginner', 'Compare two strings.', 'Use strcmp()', 10),
+('C', 'beginner', 'Create a simple function.', 'Define and call function', 10),
+('C', 'beginner', 'Pass arguments to a function.', 'Use parameters', 10),
+('C', 'beginner', 'Return a value from a function.', 'Use return keyword', 10),
+('C', 'beginner', 'Use switch-case statement.', 'Use switch keyword', 10),
+('C', 'beginner', 'Demonstrate use of break and continue.', 'Use inside loops', 10);
 
 -- INTERMEDIATE (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -25,6 +46,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('C', 'intermediate', 'Create a function that counts words in a string.', 'Count space-separated tokens', 20),
 ('C', 'intermediate', 'Implement a linear search algorithm.', 'Loop through array comparing each element', 20),
 ('C', 'intermediate', 'Write a program using command line arguments.', 'Use argc and argv in main()', 20);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('C', 'intermediate', 'Write a program using pointers.', 'Use * operator', 20),
+('C', 'intermediate', 'Swap two numbers using pointers.', 'Pass addresses', 20),
+('C', 'intermediate', 'Create a dynamic array using malloc.', 'Use malloc()', 20),
+('C', 'intermediate', 'Resize a dynamic array using realloc.', 'Use realloc()', 20),
+('C', 'intermediate', 'Free dynamically allocated memory.', 'Use free()', 20),
+('C', 'intermediate', 'Write a program using structures.', 'Use struct keyword', 20),
+('C', 'intermediate', 'Access structure members using pointer.', 'Use -> operator', 20),
+('C', 'intermediate', 'Write a program using union.', 'Use union keyword', 20),
+('C', 'intermediate', 'Create and use enum.', 'Use enum keyword', 20),
+('C', 'intermediate', 'Pass structure to a function.', 'Use struct parameters', 20),
+('C', 'intermediate', 'Implement recursion to calculate factorial.', 'Function calls itself', 20),
+('C', 'intermediate', 'Write a program to reverse a string.', 'Use loop or pointers', 20),
+('C', 'intermediate', 'Sort an array using bubble sort.', 'Compare adjacent elements', 20),
+('C', 'intermediate', 'Search an element using linear search.', 'Iterate array', 20),
+('C', 'intermediate', 'Read from a file.', 'Use fopen and fscanf', 20),
+('C', 'intermediate', 'Write data to a file.', 'Use fprintf()', 20),
+('C', 'intermediate', 'Use command-line arguments.', 'Use argc and argv', 20),
+('C', 'intermediate', 'Handle errors using perror.', 'Use perror()', 20),
+('C', 'intermediate', 'Create a header file.', 'Use .h extension', 20),
+('C', 'intermediate', 'Use static variables.', 'Use static keyword', 20);
 
 -- ADVANCED (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -38,3 +80,24 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('C', 'advanced', 'Write a multi-threaded program using pthreads.', 'Use pthread_create and pthread_join', 30),
 ('C', 'advanced', 'Implement quicksort algorithm.', 'Partition around pivot recursively', 30),
 ('C', 'advanced', 'Create a simple shell that executes commands.', 'Use fork(), exec(), and waitpid()', 30);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('C', 'advanced', 'Implement a stack using arrays.', 'Use push and pop', 30),
+('C', 'advanced', 'Implement a queue using arrays.', 'Use front and rear', 30),
+('C', 'advanced', 'Implement a linked list.', 'Use struct and pointers', 30),
+('C', 'advanced', 'Insert a node in a linked list.', 'Handle pointer links', 30),
+('C', 'advanced', 'Delete a node from a linked list.', 'Adjust pointers', 30),
+('C', 'advanced', 'Reverse a linked list.', 'Iterative or recursive', 30),
+('C', 'advanced', 'Detect a loop in a linked list.', 'Use fast and slow pointers', 30),
+('C', 'advanced', 'Implement binary search.', 'Divide and conquer', 30),
+('C', 'advanced', 'Implement merge sort.', 'Recursive sorting', 30),
+('C', 'advanced', 'Implement quick sort.', 'Use partition logic', 30),
+('C', 'advanced', 'Implement a binary tree.', 'Use node structure', 30),
+('C', 'advanced', 'Traverse a binary tree.', 'Inorder, preorder, postorder', 30),
+('C', 'advanced', 'Implement a hash table.', 'Use hashing technique', 30),
+('C', 'advanced', 'Create a custom memory allocator.', 'Use heap management', 30),
+('C', 'advanced', 'Use bitwise operators for flags.', 'Use &, |, ^', 30),
+('C', 'advanced', 'Implement a circular linked list.', 'Last node points to head', 30),
+('C', 'advanced', 'Build a mini command-line shell.', 'Use system calls', 30),
+('C', 'advanced', 'Handle signals in C.', 'Use signal handling', 30),
+('C', 'advanced', 'Implement multithreading using pthreads.', 'Use pthread library', 30),
+('C', 'advanced', 'Optimize C code for performance.', 'Reduce memory and CPU usage', 30);

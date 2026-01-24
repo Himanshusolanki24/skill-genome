@@ -12,6 +12,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('React', 'beginner', 'Create an input field that updates state on change.', 'Use onChange with e.target.value', 10),
 ('React', 'beginner', 'Import and use an external CSS file.', 'Use import "./styles.css"', 10),
 ('React', 'beginner', 'Create a component that receives and renders children.', 'Use props.children to render nested content', 10);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('React', 'beginner', 'Create a basic React functional component.', 'Use function or arrow function', 10),
+('React', 'beginner', 'Render a React component to the DOM.', 'Use ReactDOM.createRoot', 10),
+('React', 'beginner', 'Use JSX to display text.', 'Return JSX from component', 10),
+('React', 'beginner', 'Create a component that accepts props.', 'Use props parameter', 10),
+('React', 'beginner', 'Display props inside JSX.', 'Use curly braces', 10),
+('React', 'beginner', 'Create a component with state using useState.', 'Import useState hook', 10),
+('React', 'beginner', 'Update state on button click.', 'Use setter function', 10),
+('React', 'beginner', 'Handle a click event in React.', 'Use onClick handler', 10),
+('React', 'beginner', 'Render a list using map().', 'Use key attribute', 10),
+('React', 'beginner', 'Add conditional rendering using if statement.', 'Use conditions inside component', 10),
+('React', 'beginner', 'Add conditional rendering using ternary operator.', 'Use condition ? A : B', 10),
+('React', 'beginner', 'Create a controlled input field.', 'Bind value and onChange', 10),
+('React', 'beginner', 'Create a form with submit handler.', 'Use onSubmit', 10),
+('React', 'beginner', 'Prevent default form submission.', 'Use event.preventDefault()', 10),
+('React', 'beginner', 'Use React Fragment to wrap elements.', 'Use <> </>', 10),
+('React', 'beginner', 'Pass a function as a prop.', 'Use callback props', 10),
+('React', 'beginner', 'Add inline styles to a component.', 'Use style object', 10),
+('React', 'beginner', 'Add class names conditionally.', 'Use template literals', 10),
+('React', 'beginner', 'Use default props in a component.', 'Set default values', 10),
+('React', 'beginner', 'Create a reusable button component.', 'Use props for customization', 10);
 
 -- INTERMEDIATE (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -25,6 +46,27 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('React', 'intermediate', 'Create a reusable modal component.', 'Use portal and manage open/close state', 20),
 ('React', 'intermediate', 'Implement lazy loading for a component.', 'Use React.lazy() with Suspense', 20),
 ('React', 'intermediate', 'Use useReducer for complex state management.', 'Define reducer function with switch cases', 20);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('React', 'intermediate', 'Use useEffect to run code on component mount.', 'Use empty dependency array', 20),
+('React', 'intermediate', 'Fetch data from an API using useEffect.', 'Use fetch or axios', 20),
+('React', 'intermediate', 'Handle loading and error states.', 'Use multiple states', 20),
+('React', 'intermediate', 'Create a custom hook.', 'Extract reusable logic', 20),
+('React', 'intermediate', 'Use useRef to access DOM elements.', 'Use ref attribute', 20),
+('React', 'intermediate', 'Optimize rendering using React.memo.', 'Prevent unnecessary re-renders', 20),
+('React', 'intermediate', 'Lift state up between components.', 'Move state to parent', 20),
+('React', 'intermediate', 'Use context API for global state.', 'Create Context Provider', 20),
+('React', 'intermediate', 'Implement controlled vs uncontrolled components.', 'Compare input handling', 20),
+('React', 'intermediate', 'Create a dynamic form with multiple inputs.', 'Use object state', 20),
+('React', 'intermediate', 'Implement conditional rendering based on API data.', 'Check data availability', 20),
+('React', 'intermediate', 'Use useCallback to memoize functions.', 'Wrap function with hook', 20),
+('React', 'intermediate', 'Use useMemo to optimize calculations.', 'Memoize computed values', 20),
+('React', 'intermediate', 'Handle component cleanup in useEffect.', 'Return cleanup function', 20),
+('React', 'intermediate', 'Implement pagination for a list.', 'Slice array or API params', 20),
+('React', 'intermediate', 'Implement search filtering in a list.', 'Use filter method', 20),
+('React', 'intermediate', 'Create a modal component.', 'Use conditional rendering', 20),
+('React', 'intermediate', 'Implement error boundaries.', 'Use class component', 20),
+('React', 'intermediate', 'Lazy load a component.', 'Use React.lazy', 20),
+('React', 'intermediate', 'Use Suspense for loading fallback.', 'Wrap lazy component', 20);
 
 -- ADVANCED (10 questions)
 INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
@@ -38,3 +80,24 @@ INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALU
 ('React', 'advanced', 'Implement undo/redo functionality using useReducer.', 'Maintain history stack of states', 30),
 ('React', 'advanced', 'Build a drag and drop interface without libraries.', 'Use HTML5 drag events with React', 30),
 ('React', 'advanced', 'Create a suspense-compatible data fetching solution.', 'Throw promise for pending state', 30);
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('React', 'advanced', 'Implement a virtualized list.', 'Render visible items only', 30),
+('React', 'advanced', 'Build a custom state management solution.', 'Use context and reducers', 30),
+('React', 'advanced', 'Implement useReducer for complex state.', 'Use reducer pattern', 30),
+('React', 'advanced', 'Create a higher-order component (HOC).', 'Wrap component logic', 30),
+('React', 'advanced', 'Implement role-based access control.', 'Conditionally render routes', 30),
+('React', 'advanced', 'Optimize performance using code splitting.', 'Use dynamic imports', 30),
+('React', 'advanced', 'Create a reusable form validation system.', 'Use custom hooks', 30),
+('React', 'advanced', 'Implement infinite scrolling.', 'Load data on scroll', 30),
+('React', 'advanced', 'Handle race conditions in API calls.', 'Cancel outdated requests', 30),
+('React', 'advanced', 'Build a compound component pattern.', 'Use shared internal state', 30),
+('React', 'advanced', 'Implement server-side rendering conceptually.', 'Hydration and pre-rendering', 30),
+('React', 'advanced', 'Design a plugin-based component system.', 'Use composition', 30),
+('React', 'advanced', 'Create a type-safe React component system.', 'Use TypeScript generics', 30),
+('React', 'advanced', 'Implement drag and drop functionality.', 'Use HTML5 drag API', 30),
+('React', 'advanced', 'Create a real-time dashboard UI.', 'Use WebSockets', 30),
+('React', 'advanced', 'Implement optimistic UI updates.', 'Update UI before response', 30),
+('React', 'advanced', 'Design a reusable table component.', 'Use configuration-driven design', 30),
+('React', 'advanced', 'Implement feature flag system.', 'Toggle features dynamically', 30),
+('React', 'advanced', 'Create a micro-frontend-ready React app.', 'Isolate modules', 30),
+('React', 'advanced', 'Build a scalable folder architecture.', 'Separate concerns', 30);
