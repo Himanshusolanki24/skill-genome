@@ -32,6 +32,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { ContributionHeatmap } from "@/components/ContributionHeatmap";
 
 interface InterviewResult {
   id: string;
@@ -82,6 +83,8 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [contributionData, setContributionData] = useState<Record<string, number>>({});
+  const [heatmapYear, setHeatmapYear] = useState(new Date().getFullYear());
 
   // Get username or fallback
   const displayName = profile?.username || profile?.full_name?.split(" ")[0] || "there";
@@ -264,6 +267,15 @@ const Dashboard = () => {
       }
       setWeeklyProgress(weekData);
 
+      // Build contribution data for heatmap (count activities per day)
+      const contributions: Record<string, number> = {};
+      interviewData.forEach((interview) => {
+        const date = new Date(interview.interview_date);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        contributions[dateKey] = (contributions[dateKey] || 0) + 1;
+      });
+      setContributionData(contributions);
+
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -402,6 +414,35 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">Overall Score</p>
                 </div>
               </div>
+            </Card>
+          </motion.div>
+
+          {/* Contribution Heatmap */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mb-8"
+          >
+            <Card variant="genome">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookCheck className="w-5 h-5 text-primary" />
+                  Contribution Activity
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  {Object.keys(contributionData).length > 0
+                    ? `${Object.values(contributionData).reduce((a, b) => a + b, 0)} contributions in ${heatmapYear}`
+                    : "Complete interviews and tasks to build your activity history"}
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ContributionHeatmap
+                  data={contributionData}
+                  year={heatmapYear}
+                  onYearChange={setHeatmapYear}
+                />
+              </CardContent>
             </Card>
           </motion.div>
 
