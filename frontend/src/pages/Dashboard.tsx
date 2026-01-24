@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,9 @@ import {
   Trophy,
   AlertCircle,
   BookCheck,
+  RefreshCw,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -67,6 +68,7 @@ interface ExtractedSkill {
 
 const Dashboard = () => {
   const { user, profile, isProfileComplete } = useAuth();
+  const location = useLocation();
   const [interviewResults, setInterviewResults] = useState<InterviewResult[]>([]);
   const [skillData, setSkillData] = useState<SkillData[]>([]);
   const [weeklyProgress, setWeeklyProgress] = useState<WeeklyData[]>([]);
@@ -79,6 +81,7 @@ const Dashboard = () => {
     overallScore: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Get username or fallback
   const displayName = profile?.username || profile?.full_name?.split(" ")[0] || "there";
@@ -97,13 +100,15 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Refresh data when location changes (user navigates to dashboard)
+  // This ensures fresh data after completing interviews or tasks
   useEffect(() => {
     if (user?.id) {
       fetchDashboardData();
     } else {
       setLoading(false);
     }
-  }, [user?.id, extractedSkills]);
+  }, [user?.id, extractedSkills, location.key]);
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -137,38 +142,84 @@ const Dashboard = () => {
         }, 0) / interviewData.length;
 
         // Build skill data for radar chart - combine extracted skills with interview results
-        const skillMap = new Map<string, { total: number; count: number }>();
+        // Use case-insensitive matching to handle variations in skill names
+        const skillMap = new Map<string, { total: number; count: number; displayName: string }>();
+
+        // Helper function for case-insensitive matching
+        const normalizeSkillName = (name: string) => name.toLowerCase().trim();
 
         // First, add all extracted skills with 0 score
         extractedSkills.slice(0, 8).forEach((skillName) => {
-          skillMap.set(skillName, { total: 0, count: 0 });
+          const normalized = normalizeSkillName(skillName);
+          skillMap.set(normalized, { total: 0, count: 0, displayName: skillName });
         });
 
-        // Then, update with interview results
+        // Then, update with interview results using case-insensitive matching
         interviewData.forEach((interview) => {
-          const existing = skillMap.get(interview.skill) || { total: 0, count: 0 };
+          // The interview.skill could be a single skill or comma-separated list
+          const interviewSkills = interview.skill.includes(",")
+            ? interview.skill.split(",").map(s => s.trim().replace(/\s*\+\d+\s*more$/, ''))
+            : [interview.skill];
+
           const score = interview.total_questions > 0
             ? (interview.correct_answers / interview.total_questions) * 100
-            : 0;
-          skillMap.set(interview.skill, {
-            total: existing.total + score,
-            count: existing.count + 1,
+            : (interview.score || 0); // Use score field if available (0-100)
+
+          interviewSkills.forEach(skillName => {
+            const normalized = normalizeSkillName(skillName);
+
+            // Check if we have this skill in our extracted skills (case-insensitive)
+            if (skillMap.has(normalized)) {
+              const existing = skillMap.get(normalized)!;
+              skillMap.set(normalized, {
+                ...existing,
+                total: existing.total + score,
+                count: existing.count + 1,
+              });
+            } else {
+              // Also try partial matching for skills like "React" matching "React.js"
+              for (const [key, value] of skillMap.entries()) {
+                if (normalized.includes(key) || key.includes(normalized)) {
+                  skillMap.set(key, {
+                    ...value,
+                    total: value.total + score,
+                    count: value.count + 1,
+                  });
+                  break;
+                }
+              }
+            }
           });
         });
 
-        const skills: SkillData[] = Array.from(skillMap.entries()).map(([skill, data]) => ({
-          skill,
-          value: data.count > 0 ? Math.round(data.total / data.count) : 0,
-          fullMark: 100,
-        }));
+        // If user has done interviews but some skills show 0, give them a minimum baseline
+        // This represents that the interview covered topics related to all skills
+        const hasInterviews = interviewData.length > 0;
+        const globalAvgScore = avgScore;
+
+        const skills: SkillData[] = Array.from(skillMap.entries()).map(([_, data]) => {
+          let value = data.count > 0 ? Math.round(data.total / data.count) : 0;
+          // If user has done interviews but this skill wasn't directly assessed,
+          // give a baseline score of 15% of the average (shows some indirect progress)
+          if (hasInterviews && value === 0 && globalAvgScore > 0) {
+            value = Math.round(globalAvgScore * 0.15);
+          }
+          return {
+            skill: data.displayName,
+            value,
+            fullMark: 100,
+          };
+        });
         setSkillData(skills);
 
-        // Focus areas (lowest 3 skills)
-        const sortedSkills = [...skills].sort((a, b) => a.value - b.value);
+        // Focus areas (lowest 3 skills from extracted skills only)
+        const extractedSkillSet = new Set(extractedSkills.slice(0, 8).map(normalizeSkillName));
+        const relevantSkills = skills.filter(s => extractedSkillSet.has(normalizeSkillName(s.skill)));
+        const sortedSkills = [...relevantSkills].sort((a, b) => a.value - b.value);
         const focus: FocusArea[] = sortedSkills.slice(0, 3).map((s) => ({
           name: s.skill,
           level: s.value,
-          improvement: "+0%", // Can be calculated from historical data
+          improvement: s.value > 0 ? `+${s.value}%` : "+0%",
         }));
         setFocusAreas(focus);
 
@@ -217,8 +268,15 @@ const Dashboard = () => {
       console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
+
+  // Manual refresh function
+  const handleRefresh = useCallback(() => {
+    setIsRefreshing(true);
+    fetchDashboardData();
+  }, [user?.id]);
 
   // Default data for new users
   const defaultSkillData: SkillData[] = profile?.skills?.slice(0, 8).map((skill) => ({
@@ -259,14 +317,28 @@ const Dashboard = () => {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-              Welcome back, <span className="text-gradient-pink">{displayName}</span>
-            </h1>
-            <p className="text-muted-foreground">
-              {stats.skillsMastered > 0
-                ? `You've mastered ${stats.skillsMastered} skill${stats.skillsMastered > 1 ? 's' : ''}! Keep evolving.`
-                : "Start your learning journey by taking an interview!"}
-            </p>
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+                  Welcome back, <span className="text-gradient-pink">{displayName}</span>
+                </h1>
+                <p className="text-muted-foreground">
+                  {stats.skillsMastered > 0
+                    ? `You've mastered ${stats.skillsMastered} skill${stats.skillsMastered > 1 ? 's' : ''}! Keep evolving.`
+                    : "Start your learning journey by taking an interview!"}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="text-muted-foreground hover:text-foreground"
+                title="Refresh data"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
           </motion.div>
 
           {/* Stats Grid */}

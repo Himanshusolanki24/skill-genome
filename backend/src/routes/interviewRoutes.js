@@ -270,7 +270,7 @@ router.get("/history/:userId", async (req, res) => {
 // Save interview results for dashboard analytics
 router.post("/save-results", async (req, res) => {
     try {
-        const { userId, skill, averageScore, totalQuestions, correctAnswers, xpEarned } = req.body;
+        const { userId, skill, skillsArray, averageScore, totalQuestions, correctAnswers, xpEarned } = req.body;
 
         if (!userId) {
             return res.status(400).json({
@@ -290,7 +290,7 @@ router.post("/save-results", async (req, res) => {
         const calculatedCorrect = correctAnswers || Math.round((averageScore / 10) * totalQuestions);
         const calculatedXp = xpEarned || Math.round(averageScore * 10);
 
-        // Insert into interview_results
+        // Insert main interview result (with combined skill label)
         const { data, error } = await supabaseAdmin
             .from("interview_results")
             .insert({
@@ -311,6 +311,28 @@ router.post("/save-results", async (req, res) => {
                 success: false,
                 error: "Failed to save interview results",
             });
+        }
+
+        // If skillsArray provided, also save individual skill progress records
+        // This allows each skill to be tracked for focus area progress
+        if (skillsArray && Array.isArray(skillsArray) && skillsArray.length > 0) {
+            const individualSkillRecords = skillsArray.map(skillName => ({
+                user_id: userId,
+                skill: skillName,
+                score: Math.round(averageScore * 10),
+                total_questions: Math.ceil(totalQuestions / skillsArray.length) || 1,
+                correct_answers: Math.ceil(calculatedCorrect / skillsArray.length) || 0,
+                xp_earned: Math.round(calculatedXp / skillsArray.length),
+                interview_date: new Date().toISOString(),
+            }));
+
+            // Insert individual skill records (ignore errors to not break main flow)
+            await supabaseAdmin
+                .from("interview_results")
+                .insert(individualSkillRecords)
+                .catch(err => {
+                    console.warn("Could not save individual skill records:", err.message);
+                });
         }
 
         // Also update user's total XP

@@ -391,5 +391,70 @@ router.post("/update-streak", async (req, res) => {
     }
 });
 
+// Update skill progress from daily task completion
+// This allows daily tasks to contribute to focus area progress on the dashboard
+router.post("/update-skill-progress", async (req, res) => {
+    try {
+        const { userId, skill, score, xpEarned } = req.body;
+
+        if (!userId || !skill) {
+            return res.status(400).json({
+                success: false,
+                error: "User ID and skill are required",
+            });
+        }
+
+        if (!isSupabaseConfigured() || !supabaseAdmin) {
+            return res.status(503).json({
+                success: false,
+                error: "Database not configured",
+            });
+        }
+
+        // Convert score (0-10) to percentage (0-100)
+        const scorePercentage = Math.round((score || 6) * 10);
+        const calculatedXp = xpEarned || Math.round(score * 5);
+
+        // Insert into interview_results to track skill progress
+        // This uses the same table so Dashboard can aggregate all skill progress
+        const { data, error } = await supabaseAdmin
+            .from("interview_results")
+            .insert({
+                user_id: userId,
+                skill: skill,
+                score: scorePercentage,
+                total_questions: 1,
+                correct_answers: score >= 6 ? 1 : 0,
+                xp_earned: calculatedXp,
+                interview_date: new Date().toISOString(),
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error saving skill progress:", error);
+            return res.status(500).json({
+                success: false,
+                error: "Failed to save skill progress",
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                id: data?.id,
+                skillUpdated: skill,
+                score: scorePercentage,
+            },
+        });
+    } catch (error) {
+        console.error("Skill progress update error:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message || "Failed to update skill progress",
+        });
+    }
+});
+
 module.exports = router;
 

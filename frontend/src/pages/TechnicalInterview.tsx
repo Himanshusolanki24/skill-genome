@@ -172,14 +172,20 @@ const TechnicalInterview = () => {
 
                 // Save results to database for Dashboard
                 if (user?.id) {
-                    const primarySkill = skills.length > 0 ? skills[0].name : "General";
+                    // Include all skills in the interview record, not just the first one
+                    const skillNames = skills.map(s => s.name);
+                    const skillLabel = skillNames.length > 3
+                        ? `${skillNames.slice(0, 3).join(", ")} +${skillNames.length - 3} more`
+                        : skillNames.join(", ") || "General";
+
                     try {
                         await fetch(`${API_BASE_URL}/api/interview/save-results`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
                                 userId: user.id,
-                                skill: primarySkill,
+                                skill: skillLabel,
+                                skillsArray: skillNames, // Pass all skills for individual tracking
                                 averageScore: data.data.averageScore,
                                 totalQuestions: 6,
                                 correctAnswers: Math.round((data.data.averageScore / 10) * 6),

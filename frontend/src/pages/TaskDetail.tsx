@@ -177,6 +177,23 @@ const TaskDetail = () => {
                     console.error("Error updating streak:", streakError);
                 }
 
+                // Update skill progress for the focus area tracking
+                // This allows daily task completions to show progress in dashboard's focus areas
+                try {
+                    await fetch(`${API_BASE_URL}/api/daily-tasks/update-skill-progress`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            userId: user.id,
+                            skill: task.technology,
+                            score: validateData.score,
+                            xpEarned: task.xp_reward,
+                        }),
+                    });
+                } catch (skillError) {
+                    console.error("Error updating skill progress:", skillError);
+                }
+
                 setIsCompleted(true);
                 setShowCelebration(true);
 
