@@ -270,9 +270,26 @@ const Dashboard = () => {
     { day: "Sun", xp: 0 },
   ];
 
-  const displaySkillData = skillData.length > 0 ? skillData : defaultSkillData;
+  // Ensure we always have at least 3 data points for radar chart to render properly
+  const ensureMinimumPoints = (data: SkillData[]): SkillData[] => {
+    if (data.length >= 3) return data;
+    const defaultPoints: SkillData[] = [
+      { skill: "JavaScript", value: 0, fullMark: 100 },
+      { skill: "Python", value: 0, fullMark: 100 },
+      { skill: "React", value: 0, fullMark: 100 },
+      { skill: "SQL", value: 0, fullMark: 100 },
+      { skill: "HTML", value: 0, fullMark: 100 },
+    ];
+    // Add default points that aren't already in data
+    const existingSkills = new Set(data.map(d => d.skill));
+    const additionalPoints = defaultPoints.filter(p => !existingSkills.has(p.skill));
+    return [...data, ...additionalPoints].slice(0, Math.max(data.length, 5));
+  };
+
+  const displaySkillData = ensureMinimumPoints(skillData.length > 0 ? skillData : defaultSkillData);
   const displayWeeklyProgress = weeklyProgress.some((d) => d.xp > 0) ? weeklyProgress : defaultWeeklyProgress;
   const hasData = interviewResults.length > 0;
+  const isChartReady = !loading && displaySkillData.length >= 3;
 
   return (
     <div className="min-h-screen bg-background">
@@ -388,7 +405,11 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="h-[350px]">
-                    {displaySkillData.length > 0 ? (
+                    {loading ? (
+                      <div className="h-full flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    ) : displaySkillData.length >= 3 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <RadarChart
                           cx="50%"
