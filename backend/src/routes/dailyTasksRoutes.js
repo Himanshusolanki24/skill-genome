@@ -535,5 +535,50 @@ router.post("/update-skill-progress", async (req, res) => {
     }
 });
 
+// Focus Area Progress - counts completed vs total tasks per skill
+router.get("/focus-area-progress/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { skills } = req.query;
+
+        if (!isSupabaseConfigured() || !supabaseAdmin) {
+            return res.status(503).json({ success: false, error: "Database not configured" });
+        }
+
+        const skillList = skills ? skills.split(",").map(s => s.trim()) : [];
+        if (skillList.length === 0) {
+            return res.json({ success: true, data: {} });
+        }
+
+        const { data: allTasks } = await supabaseAdmin
+            .from("daily_tasks")
+            .select("id, technology")
+            .in("technology", skillList);
+
+        const { data: completedTasks } = await supabaseAdmin
+            .from("user_completed_tasks")
+            .select("task_id")
+            .eq("user_id", userId);
+
+        const completedIds = new Set((completedTasks || []).map(t => t.task_id));
+        const progressData = {};
+
+        skillList.forEach(skill => {
+            const tasksForSkill = (allTasks || []).filter(t => t.technology === skill);
+            const total = tasksForSkill.length;
+            const completed = tasksForSkill.filter(t => completedIds.has(t.id)).length;
+            progressData[skill] = {
+                total,
+                completed,
+                progress: total > 0 ? Math.round((completed / total) * 100) : 0
+            };
+        });
+
+        res.json({ success: true, data: progressData });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 module.exports = router;
 

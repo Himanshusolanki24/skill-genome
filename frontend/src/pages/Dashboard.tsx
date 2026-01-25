@@ -217,12 +217,29 @@ const Dashboard = () => {
 
         // Focus areas (lowest 3 skills)
         const sortedSkills = [...skills].sort((a, b) => a.value - b.value);
-        const focus: FocusArea[] = sortedSkills.slice(0, 3).map((s) => ({
-          name: s.skill,
-          level: s.value,
-          improvement: "+0%", // Can be calculated from historical data
-        }));
-        setFocusAreas(focus);
+        const focusSkillNames = sortedSkills.slice(0, 3).map(s => s.skill);
+
+        // Fetch task completion progress for focus areas
+        try {
+          const progressRes = await fetch(
+            `${API_BASE_URL}/api/daily-tasks/focus-area-progress/${user.id}?skills=${encodeURIComponent(focusSkillNames.join(','))}`
+          );
+          const progressData = await parseApiResponse(progressRes);
+          if (progressData.success) {
+            const progress = progressData.data || {};
+            const focus: FocusArea[] = focusSkillNames.map((skillName) => ({
+              name: skillName,
+              level: progress[skillName]?.progress || 0,
+              improvement: `${progress[skillName]?.completed || 0}/${progress[skillName]?.total || 0}`,
+            }));
+            setFocusAreas(focus);
+          } else {
+            // Fallback
+            setFocusAreas(focusSkillNames.map(name => ({ name, level: 0, improvement: "0/0" })));
+          }
+        } catch {
+          setFocusAreas(focusSkillNames.map(name => ({ name, level: 0, improvement: "0/0" })));
+        }
 
         // Count skills mastered (scored >= 70%)
         const masteredSkills = skills.filter(s => s.value >= 70).length;
@@ -511,9 +528,9 @@ const Dashboard = () => {
                             </span>
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-skill-advanced">
-                                {skill.improvement}
+                                {skill.improvement} tasks
                               </span>
-                              <span className="text-sm text-muted-foreground">
+                              <span className="text-sm text-primary font-medium">
                                 {skill.level}%
                               </span>
                             </div>
