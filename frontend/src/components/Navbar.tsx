@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Dna, LayoutDashboard, Target, BarChart3, User, LogOut, ChevronDown, Settings } from "lucide-react";
+import { Dna, LayoutDashboard, Target, BarChart3, User, LogOut, ChevronDown, Settings, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const navItems = [
   { path: "/", label: "Home", icon: Dna },
@@ -17,6 +18,7 @@ export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut, loading } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleSignOut = async () => {
@@ -24,6 +26,7 @@ export const Navbar = () => {
     setShowProfileMenu(false);
     navigate("/");
   };
+  // ... (rest of helper functions unchanged)
 
   // Get user initials for avatar (prefer profile data from DB)
   const getUserInitials = () => {
@@ -99,6 +102,30 @@ export const Navbar = () => {
 
           {/* CTA / Profile */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            <motion.button
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-primary transition-colors relative overflow-hidden"
+              whileTap={{ scale: 0.9 }}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={theme}
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {theme === "dark" ? (
+                    <Moon className="w-5 h-5" />
+                  ) : (
+                    <Sun className="w-5 h-5" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </motion.button>
+
             {loading ? (
               <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
             ) : user ? (
