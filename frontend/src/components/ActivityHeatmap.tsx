@@ -12,7 +12,7 @@ interface ActivityHeatmapProps {
 }
 
 const ACTIVITY_COLORS = {
-  0: "#1a1a2e",
+  0: "#0e4429",   // Base green color for all past dates
   1: "#0e4429",
   2: "#006d32",
   3: "#26a641",
