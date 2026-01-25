@@ -12,11 +12,11 @@ interface ActivityHeatmapProps {
 }
 
 const ACTIVITY_COLORS = {
-  0: "#0e4429",   // Base green color for all past dates
-  1: "#0e4429",
-  2: "#006d32",
-  3: "#26a641",
-  4: "#39d353",
+  0: "#161b22",   // Dark grey for empty days
+  1: "#0e4429",   // Dark green
+  2: "#006d32",   // Medium green
+  3: "#26a641",   // Bright green
+  4: "#39d353",   // Neon green
 } as const;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -132,29 +132,19 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
               const future = isFuture(date);
               const inYear = isCurrentYear(date);
 
-              if (!inYear) {
-                return (
-                  <div
-                    key={`${weekIdx}-${dayOfWeek}`}
-                    className="aspect-square rounded-sm"
-                    style={{ backgroundColor: 'transparent' }}
-                  />
-                );
-              }
-
               return (
                 <div
                   key={`${weekIdx}-${dayOfWeek}`}
                   className="aspect-square rounded-sm cursor-pointer transition-all hover:ring-1 hover:ring-gray-500"
                   style={{
-                    backgroundColor: future ? '#161b22' : ACTIVITY_COLORS[level],
-                    opacity: future ? 0.3 : 1,
+                    backgroundColor: ACTIVITY_COLORS[level],
+                    opacity: 1,
                     minWidth: '6px',
                     maxWidth: '12px',
                   }}
-                  onMouseEnter={() => !future && setHoveredCell({ date, count })}
+                  onMouseEnter={() => setHoveredCell({ date, count })}
                   onMouseLeave={() => setHoveredCell(null)}
-                  title={future ? 'Future' : `${count} contributions on ${date.toDateString()}`}
+                  title={`${count} contributions on ${date.toDateString()}`}
                 />
               );
             })}

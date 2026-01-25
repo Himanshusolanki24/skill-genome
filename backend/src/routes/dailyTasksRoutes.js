@@ -472,5 +472,68 @@ router.get("/activity-heatmap/:userId", async (req, res) => {
     }
 });
 
+// Update skill progress (called when daily task is completed)
+router.post("/update-skill-progress", async (req, res) => {
+    try {
+        const { userId, skill, score, xpEarned } = req.body;
+
+        if (!userId || !skill) {
+            return res.status(400).json({
+                success: false,
+                error: "User ID and skill are required",
+            });
+        }
+
+        if (!isSupabaseConfigured() || !supabaseAdmin) {
+            return res.status(503).json({
+                success: false,
+                error: "Database not configured",
+            });
+        }
+
+        // We treat a daily task completion as a mini-interview result
+        // This allows it to influence the "Focus Areas" which are calculated from interview_results
+        // We set total_questions to 1 since it's a single task
+
+        // Calculate "correct answers" - if score >= 6 it's "correct" (1/1), else 0/1
+        const isCorrect = (score || 0) >= 6;
+
+        const { data, error } = await supabaseAdmin
+            .from("interview_results")
+            .insert({
+                user_id: userId,
+                skill: skill,
+                score: (score || 0) * 10, // Scale 0-10 to 0-100
+                total_questions: 1,
+                correct_answers: isCorrect ? 1 : 0,
+                xp_earned: xpEarned || 0,
+                interview_date: new Date().toISOString(),
+                // Add a metadata field if supported by schema to distinguish from real interviews?
+                // For now, schema seems to not have 'type', so we just insert as is.
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error updating skill progress:", error);
+            return res.status(500).json({
+                success: false,
+                error: "Failed to update skill progress",
+            });
+        }
+
+        res.json({
+            success: true,
+            data: data,
+        });
+    } catch (error) {
+        console.error("Skill progress update error:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message || "Failed to update skill progress",
+        });
+    }
+});
+
 module.exports = router;
 
