@@ -1,8 +1,5 @@
 import { useMemo, useState, useCallback } from "react";
 
-// ============================================================================
-// TYPES
-// ============================================================================
 interface ActivityData {
   date: string;
   count: number;
@@ -14,23 +11,17 @@ interface ActivityHeatmapProps {
   year?: number;
 }
 
-// ============================================================================
-// CONSTANTS
-// ============================================================================
 const ACTIVITY_COLORS = {
-  0: "#1f2933",   // 0 contributions
-  1: "#0e4429",   // 1–2 contributions
-  2: "#006d32",   // 3–5 contributions
-  3: "#26a641",   // 6–9 contributions
-  4: "#39d353",   // 10+ contributions
+  0: "#1a1a2e",
+  1: "#0e4429",
+  2: "#006d32",
+  3: "#26a641",
+  4: "#39d353",
 } as const;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const FULL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
 const getActivityLevel = (count: number): keyof typeof ACTIVITY_COLORS => {
   if (count === 0) return 0;
   if (count <= 2) return 1;
@@ -46,205 +37,124 @@ const formatDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-const formatTooltipDate = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = FULL_MONTHS[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} ${month} ${year}`;
-};
-
-// ============================================================================
-// TOOLTIP COMPONENT
-// ============================================================================
-interface TooltipProps {
-  content: string;
-  position: { x: number; y: number } | null;
-}
-
-const HeatmapTooltip = ({ content, position }: TooltipProps) => {
-  if (!position) return null;
-
-  return (
-    <div
-      className="fixed z-50 pointer-events-none"
-      style={{
-        left: position.x,
-        top: position.y - 40,
-        transform: "translateX(-50%)",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "#111827",
-          color: "#e5e7eb",
-          fontSize: "12px",
-          padding: "6px 10px",
-          borderRadius: "6px",
-          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {content}
-      </div>
-    </div>
-  );
-};
-
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
 const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeatmapProps) => {
-  const [tooltip, setTooltip] = useState<{ content: string; position: { x: number; y: number } } | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<{ date: Date; count: number } | null>(null);
   const currentYear = propYear ?? new Date().getFullYear();
 
-  // Activity lookup map
   const activityMap = useMemo(() => {
     const map = new Map<string, number>();
     data.forEach((item) => map.set(item.date, item.count));
     return map;
   }, [data]);
 
-  // Generate calendar grid for the specified year
-  const { weeks, monthLabels } = useMemo(() => {
-    const weeksArray: (Date | null)[][] = [];
-
+  // Generate all weeks for the year (52-53 weeks)
+  const weeks = useMemo(() => {
+    const weeksArray: Date[][] = [];
     const yearStart = new Date(currentYear, 0, 1);
     const yearEnd = new Date(currentYear, 11, 31);
 
-    // Align grid to start on Sunday of the week containing Jan 1
+    // Start from first Sunday on or before Jan 1
     const gridStart = new Date(yearStart);
     gridStart.setDate(gridStart.getDate() - gridStart.getDay());
 
-    let cursor = new Date(gridStart);
+    let current = new Date(gridStart);
 
-    // Build weeks until we've covered the entire year
-    while (cursor <= yearEnd || weeksArray[weeksArray.length - 1]?.length < 7) {
-      const week: (Date | null)[] = [];
+    while (current <= yearEnd) {
+      const week: Date[] = [];
       for (let d = 0; d < 7; d++) {
-        const cellDate = new Date(cursor);
-        if (cellDate.getFullYear() === currentYear) {
-          week.push(cellDate);
-        } else {
-          week.push(null);
-        }
-        cursor.setDate(cursor.getDate() + 1);
+        week.push(new Date(current));
+        current.setDate(current.getDate() + 1);
       }
       weeksArray.push(week);
-      if (cursor > yearEnd && week.length === 7) break;
-      if (weeksArray.length > 54) break;
     }
 
-    // Calculate month label positions
-    const monthLabelPositions: { name: string; colIndex: number }[] = [];
-    let currentMonth = -1;
-
-    weeksArray.forEach((week, colIdx) => {
-      const firstValidDate = week.find((d) => d !== null);
-      if (firstValidDate) {
-        const month = firstValidDate.getMonth();
-        if (month !== currentMonth) {
-          monthLabelPositions.push({
-            name: MONTHS[month],
-            colIndex: colIdx,
-          });
-          currentMonth = month;
-        }
-      }
-    });
-
-    return {
-      weeks: weeksArray,
-      monthLabels: monthLabelPositions,
-    };
+    return weeksArray;
   }, [currentYear]);
 
-  // Tooltip handlers
-  const showTooltip = useCallback((e: React.MouseEvent | React.FocusEvent, count: number, date: Date) => {
-    const rect = (e.target as HTMLElement).getBoundingClientRect();
-    setTooltip({
-      content: `${count} contribution${count !== 1 ? "s" : ""} on ${formatTooltipDate(date)}`,
-      position: {
-        x: rect.left + rect.width / 2,
-        y: rect.top,
-      },
-    });
-  }, []);
-
-  const hideTooltip = useCallback(() => {
-    setTooltip(null);
-  }, []);
-
-  // Check if date is in the future
   const isFuture = (date: Date): boolean => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d > today;
+    today.setHours(23, 59, 59, 999);
+    return date > today;
   };
 
-  // Loading state
+  const isCurrentYear = (date: Date): boolean => {
+    return date.getFullYear() === currentYear;
+  };
+
   if (loading) {
     return (
-      <div className="w-full h-32 flex items-center justify-center bg-[#0f0f0f] rounded-lg">
+      <div className="w-full h-32 flex items-center justify-center bg-[#0d1117] rounded-lg">
         <div className="animate-pulse text-gray-400 text-sm">Loading activity...</div>
       </div>
     );
   }
 
-  // Calculate dynamic cell size based on container width
-  const totalWeeks = weeks.length;
-
   return (
-    <div className="bg-[#0f0f0f] p-4 rounded-lg">
-      {/* Month Labels - evenly spaced */}
-      <div className="flex justify-between mb-2 px-1">
-        {MONTHS.map((month) => (
-          <span key={month} className="text-xs text-gray-400 w-[8%] text-center">
-            {month}
-          </span>
-        ))}
+    <div className="bg-[#0d1117] p-4 rounded-lg overflow-hidden">
+      {/* Month Labels */}
+      <div
+        className="grid mb-2"
+        style={{
+          gridTemplateColumns: `repeat(${weeks.length}, 1fr)`,
+          gap: '0px'
+        }}
+      >
+        {weeks.map((week, idx) => {
+          const firstDay = week.find(d => isCurrentYear(d));
+          const showLabel = firstDay && firstDay.getDate() <= 7;
+          return (
+            <div
+              key={idx}
+              className="text-[10px] text-gray-500 overflow-hidden whitespace-nowrap"
+              style={{ minWidth: 0 }}
+            >
+              {showLabel ? MONTHS[firstDay.getMonth()] : ''}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Heatmap Grid - responsive */}
-      <div className="flex gap-[2px]">
-        {weeks.map((week, colIdx) => (
+      {/* Heatmap Grid - 7 rows (days) x 52-53 columns (weeks) */}
+      <div className="flex flex-col gap-[2px]">
+        {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => (
           <div
-            key={`week-${colIdx}`}
-            className="flex flex-col gap-[2px]"
-            style={{ flex: `1 1 ${100 / totalWeeks}%`, minWidth: 0 }}
+            key={dayOfWeek}
+            className="grid gap-[2px]"
+            style={{
+              gridTemplateColumns: `repeat(${weeks.length}, 1fr)`
+            }}
           >
-            {week.map((date, rowIdx) => {
-              if (date === null) {
-                return (
-                  <div
-                    key={`${colIdx}-${rowIdx}`}
-                    className="w-full aspect-square"
-                  />
-                );
-              }
-
+            {weeks.map((week, weekIdx) => {
+              const date = week[dayOfWeek];
               const dateKey = formatDateKey(date);
               const count = activityMap.get(dateKey) || 0;
               const level = getActivityLevel(count);
               const future = isFuture(date);
+              const inYear = isCurrentYear(date);
+
+              if (!inYear) {
+                return (
+                  <div
+                    key={`${weekIdx}-${dayOfWeek}`}
+                    className="aspect-square rounded-sm"
+                    style={{ backgroundColor: 'transparent' }}
+                  />
+                );
+              }
 
               return (
                 <div
-                  key={`${colIdx}-${rowIdx}`}
-                  role="gridcell"
-                  tabIndex={0}
-                  aria-label={`${count} contributions on ${formatTooltipDate(date)}`}
-                  onMouseEnter={(e) => !future && showTooltip(e, count, date)}
-                  onMouseLeave={hideTooltip}
-                  onFocus={(e) => !future && showTooltip(e, count, date)}
-                  onBlur={hideTooltip}
-                  className="w-full aspect-square rounded-sm transition-all cursor-pointer hover:brightness-125"
+                  key={`${weekIdx}-${dayOfWeek}`}
+                  className="aspect-square rounded-sm cursor-pointer transition-all hover:ring-1 hover:ring-gray-500"
                   style={{
-                    backgroundColor: future ? "transparent" : ACTIVITY_COLORS[level],
-                    opacity: future ? 0.15 : 1,
-                    cursor: future ? "default" : "pointer",
+                    backgroundColor: future ? '#161b22' : ACTIVITY_COLORS[level],
+                    opacity: future ? 0.3 : 1,
+                    minWidth: '6px',
+                    maxWidth: '12px',
                   }}
+                  onMouseEnter={() => !future && setHoveredCell({ date, count })}
+                  onMouseLeave={() => setHoveredCell(null)}
+                  title={future ? 'Future' : `${count} contributions on ${date.toDateString()}`}
                 />
               );
             })}
@@ -254,19 +164,23 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
 
       {/* Legend */}
       <div className="flex items-center justify-end mt-3 gap-1">
-        <span className="text-xs text-gray-400 mr-2">Less</span>
+        <span className="text-[10px] text-gray-500 mr-1">Less</span>
         {Object.values(ACTIVITY_COLORS).map((color, idx) => (
           <div
             key={idx}
-            className="w-3 h-3 rounded-sm"
+            className="w-[10px] h-[10px] rounded-sm"
             style={{ backgroundColor: color }}
           />
         ))}
-        <span className="text-xs text-gray-400 ml-2">More</span>
+        <span className="text-[10px] text-gray-500 ml-1">More</span>
       </div>
 
       {/* Tooltip */}
-      <HeatmapTooltip content={tooltip?.content || ""} position={tooltip?.position || null} />
+      {hoveredCell && (
+        <div className="mt-2 text-center text-xs text-gray-400">
+          {hoveredCell.count} contribution{hoveredCell.count !== 1 ? 's' : ''} on {FULL_MONTHS[hoveredCell.date.getMonth()]} {hoveredCell.date.getDate()}, {hoveredCell.date.getFullYear()}
+        </div>
+      )}
     </div>
   );
 };
