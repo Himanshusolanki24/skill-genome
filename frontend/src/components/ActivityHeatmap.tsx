@@ -15,7 +15,7 @@ interface ActivityHeatmapProps {
 }
 
 // ============================================================================
-// CONSTANTS - Exact LeetCode/GFG Color Scheme
+// CONSTANTS
 // ============================================================================
 const ACTIVITY_COLORS = {
   0: "#1f2933",   // 0 contributions
@@ -27,11 +27,6 @@ const ACTIVITY_COLORS = {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const FULL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-// Cell dimensions - exact LeetCode/GFG specs
-const CELL_SIZE = 10;
-const CELL_GAP = 3;
-const CELL_RADIUS = 2;
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -56,10 +51,6 @@ const formatTooltipDate = (date: Date): string => {
   const month = FULL_MONTHS[date.getMonth()];
   const year = date.getFullYear();
   return `${day} ${month} ${year}`;
-};
-
-const formatAriaLabel = (count: number, date: Date): string => {
-  return `${count} contribution${count !== 1 ? "s" : ""} on ${formatTooltipDate(date)}`;
 };
 
 // ============================================================================
@@ -89,7 +80,7 @@ const HeatmapTooltip = ({ content, position }: TooltipProps) => {
           fontSize: "12px",
           padding: "6px 10px",
           borderRadius: "6px",
-          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3)",
           whiteSpace: "nowrap",
         }}
       >
@@ -131,7 +122,6 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
       const week: (Date | null)[] = [];
       for (let d = 0; d < 7; d++) {
         const cellDate = new Date(cursor);
-        // Only include dates within the target year, mark others as null (inactive)
         if (cellDate.getFullYear() === currentYear) {
           week.push(cellDate);
         } else {
@@ -141,7 +131,7 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
       }
       weeksArray.push(week);
       if (cursor > yearEnd && week.length === 7) break;
-      if (weeksArray.length > 54) break; // Safety limit
+      if (weeksArray.length > 54) break;
     }
 
     // Calculate month label positions
@@ -149,7 +139,6 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
     let currentMonth = -1;
 
     weeksArray.forEach((week, colIdx) => {
-      // Find first valid date in this week
       const firstValidDate = week.find((d) => d !== null);
       if (firstValidDate) {
         const month = firstValidDate.getMonth();
@@ -194,145 +183,86 @@ const ActivityHeatmap = ({ data, loading = false, year: propYear }: ActivityHeat
     return d > today;
   };
 
-  // ============================================================================
-  // LOADING STATE
-  // ============================================================================
+  // Loading state
   if (loading) {
     return (
-      <div
-        className="w-full h-40 flex items-center justify-center"
-        style={{ backgroundColor: "#0f0f0f" }}
-      >
+      <div className="w-full h-32 flex items-center justify-center bg-[#0f0f0f] rounded-lg">
         <div className="animate-pulse text-gray-400 text-sm">Loading activity...</div>
       </div>
     );
   }
 
-  // ============================================================================
-  // RENDER
-  // ============================================================================
-  const gridWidth = weeks.length * CELL_SIZE + (weeks.length - 1) * CELL_GAP;
+  // Calculate dynamic cell size based on container width
+  const totalWeeks = weeks.length;
 
   return (
-    <div
-      style={{
-        backgroundColor: "#0f0f0f",
-        padding: "16px",
-        borderRadius: "8px",
-      }}
-    >
-      {/* Scrollable container for mobile */}
-      <div
-        style={{
-          overflowX: "auto",
-          overflowY: "hidden",
-        }}
-        className="scrollbar-genome"
-      >
-        <div style={{ minWidth: gridWidth }}>
-          {/* MONTH LABELS */}
+    <div className="bg-[#0f0f0f] p-4 rounded-lg">
+      {/* Month Labels - evenly spaced */}
+      <div className="flex justify-between mb-2 px-1">
+        {MONTHS.map((month) => (
+          <span key={month} className="text-xs text-gray-400 w-[8%] text-center">
+            {month}
+          </span>
+        ))}
+      </div>
+
+      {/* Heatmap Grid - responsive */}
+      <div className="flex gap-[2px]">
+        {weeks.map((week, colIdx) => (
           <div
-            style={{
-              display: "flex",
-              marginBottom: "4px",
-              gap: `${CELL_GAP}px`,
-            }}
+            key={`week-${colIdx}`}
+            className="flex flex-col gap-[2px]"
+            style={{ flex: `1 1 ${100 / totalWeeks}%`, minWidth: 0 }}
           >
-            {weeks.map((_, colIdx) => {
-              const label = monthLabels.find((m) => m.colIndex === colIdx);
+            {week.map((date, rowIdx) => {
+              if (date === null) {
+                return (
+                  <div
+                    key={`${colIdx}-${rowIdx}`}
+                    className="w-full aspect-square"
+                  />
+                );
+              }
+
+              const dateKey = formatDateKey(date);
+              const count = activityMap.get(dateKey) || 0;
+              const level = getActivityLevel(count);
+              const future = isFuture(date);
+
               return (
                 <div
-                  key={`month-${colIdx}`}
+                  key={`${colIdx}-${rowIdx}`}
+                  role="gridcell"
+                  tabIndex={0}
+                  aria-label={`${count} contributions on ${formatTooltipDate(date)}`}
+                  onMouseEnter={(e) => !future && showTooltip(e, count, date)}
+                  onMouseLeave={hideTooltip}
+                  onFocus={(e) => !future && showTooltip(e, count, date)}
+                  onBlur={hideTooltip}
+                  className="w-full aspect-square rounded-sm transition-all cursor-pointer hover:brightness-125"
                   style={{
-                    width: `${CELL_SIZE}px`,
-                    flexShrink: 0,
-                    fontSize: "12px",
-                    color: "#9ca3af",
-                    textAlign: "left",
+                    backgroundColor: future ? "transparent" : ACTIVITY_COLORS[level],
+                    opacity: future ? 0.15 : 1,
+                    cursor: future ? "default" : "pointer",
                   }}
-                >
-                  {label?.name || ""}
-                </div>
+                />
               );
             })}
           </div>
+        ))}
+      </div>
 
-          {/* HEATMAP GRID */}
+      {/* Legend */}
+      <div className="flex items-center justify-end mt-3 gap-1">
+        <span className="text-xs text-gray-400 mr-2">Less</span>
+        {Object.values(ACTIVITY_COLORS).map((color, idx) => (
           <div
-            style={{
-              display: "flex",
-              gap: `${CELL_GAP}px`,
-            }}
-          >
-            {weeks.map((week, colIdx) => (
-              <div
-                key={`week-${colIdx}`}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: `${CELL_GAP}px`,
-                }}
-              >
-                {week.map((date, rowIdx) => {
-                  // Null dates (outside target year) - render empty placeholder
-                  if (date === null) {
-                    return (
-                      <div
-                        key={`${colIdx}-${rowIdx}`}
-                        style={{
-                          width: `${CELL_SIZE}px`,
-                          height: `${CELL_SIZE}px`,
-                        }}
-                      />
-                    );
-                  }
-
-                  const dateKey = formatDateKey(date);
-                  const count = activityMap.get(dateKey) || 0;
-                  const level = getActivityLevel(count);
-                  const future = isFuture(date);
-                  const ariaLabel = formatAriaLabel(count, date);
-
-                  return (
-                    <div
-                      key={`${colIdx}-${rowIdx}`}
-                      role="gridcell"
-                      tabIndex={0}
-                      aria-label={ariaLabel}
-                      onMouseEnter={(e) => !future && showTooltip(e, count, date)}
-                      onMouseLeave={hideTooltip}
-                      onFocus={(e) => !future && showTooltip(e, count, date)}
-                      onBlur={hideTooltip}
-                      style={{
-                        width: `${CELL_SIZE}px`,
-                        height: `${CELL_SIZE}px`,
-                        borderRadius: `${CELL_RADIUS}px`,
-                        backgroundColor: future ? "transparent" : ACTIVITY_COLORS[level],
-                        opacity: future ? 0.15 : 1,
-                        cursor: future ? "default" : "pointer",
-                        transition: "filter 150ms ease-in-out",
-                        outline: "none",
-                      }}
-                      onMouseOver={(e) => {
-                        if (!future) {
-                          (e.target as HTMLElement).style.filter = "brightness(1.3)";
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        (e.target as HTMLElement).style.filter = "brightness(1)";
-                      }}
-                      onKeyDown={(e) => {
-                        if (!future && (e.key === "Enter" || e.key === " ")) {
-                          // Could trigger some action if needed
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
+            key={idx}
+            className="w-3 h-3 rounded-sm"
+            style={{ backgroundColor: color }}
+          />
+        ))}
+        <span className="text-xs text-gray-400 ml-2">More</span>
       </div>
 
       {/* Tooltip */}
