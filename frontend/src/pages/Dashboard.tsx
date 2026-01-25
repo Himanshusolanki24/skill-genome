@@ -93,7 +93,10 @@ const Dashboard = () => {
   // Get username or fallback
   const displayName = profile?.username || profile?.full_name?.split(" ")[0] || "there";
 
-  // Load extracted skills from localStorage
+  // Track if skills have been loaded from localStorage
+  const [skillsLoaded, setSkillsLoaded] = useState(false);
+
+  // Load extracted skills from localStorage FIRST
   useEffect(() => {
     const storedSkills = localStorage.getItem("extractedSkills");
     if (storedSkills) {
@@ -105,9 +108,13 @@ const Dashboard = () => {
         console.error("Failed to parse stored skills", e);
       }
     }
+    setSkillsLoaded(true); // Mark as loaded even if empty
   }, []);
 
+  // Only fetch dashboard data AFTER skills are loaded
   useEffect(() => {
+    if (!skillsLoaded) return; // Wait for skills to load first
+
     if (user?.id) {
       fetchDashboardData();
       fetchActivityHeatmap();
@@ -115,7 +122,7 @@ const Dashboard = () => {
       setLoading(false);
       setHeatmapLoading(false);
     }
-  }, [user?.id, extractedSkills]);
+  }, [user?.id, skillsLoaded]); // Removed extractedSkills dependency to prevent re-fetch
 
   const fetchActivityHeatmap = async () => {
     if (!user?.id) return;
