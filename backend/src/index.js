@@ -68,7 +68,11 @@ app.post("/api/github/skills", async (req, res) => {
         });
     } catch (error) {
         console.error("GitHub extraction error:", error.message);
-        res.status(500).json({
+
+        // Handle specific error cases
+        const status = error.message.includes("token is invalid") || error.message.includes("Bad credentials") ? 401 : 500;
+
+        res.status(status).json({
             success: false,
             error: error.message,
         });
