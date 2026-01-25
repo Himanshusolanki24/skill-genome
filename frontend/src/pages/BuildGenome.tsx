@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { NeuralBackground } from "@/components/NeuralBackground";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import {
     Github,
     FileText,
@@ -42,6 +44,8 @@ interface ExtractionResult {
 }
 
 const BuildGenome = () => {
+    const { user } = useAuth();
+    const { toast } = useToast();
     const [inputMode, setInputMode] = useState<InputMode>("github");
     const [githubUsername, setGithubUsername] = useState("");
     const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -190,6 +194,16 @@ const BuildGenome = () => {
     };
 
     const handleSubmit = () => {
+        // Check if user is logged in
+        if (!user) {
+            toast({
+                title: "Login Required",
+                description: "Please login first to analyze your skills. Your data will be saved to your account.",
+                variant: "destructive",
+            });
+            return;
+        }
+
         if (inputMode === "github" && isValid) {
             extractGitHubSkills();
         } else if (inputMode === "resume" && resumeFile) {
