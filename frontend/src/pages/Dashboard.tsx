@@ -76,7 +76,17 @@ interface ActivityData {
 const Dashboard = () => {
   const { user, profile, isProfileComplete } = useAuth();
   const [interviewResults, setInterviewResults] = useState<InterviewResult[]>([]);
-  const [skillData, setSkillData] = useState<SkillData[]>([]);
+
+  // Initialize skillData from sessionStorage to prevent flash of different data on navigation
+  const [skillData, setSkillData] = useState<SkillData[]>(() => {
+    try {
+      const cached = sessionStorage.getItem("dashboardSkillData");
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [weeklyProgress, setWeeklyProgress] = useState<WeeklyData[]>([]);
   const [focusAreas, setFocusAreas] = useState<FocusArea[]>([]);
   const [extractedSkills, setExtractedSkills] = useState<string[]>([]);
@@ -89,6 +99,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activityData, setActivityData] = useState<ActivityData[]>([]);
   const [heatmapLoading, setHeatmapLoading] = useState(true);
+
+  // Cache skillData to sessionStorage when it changes
+  useEffect(() => {
+    if (skillData.length > 0) {
+      sessionStorage.setItem("dashboardSkillData", JSON.stringify(skillData));
+    }
+  }, [skillData]);
 
   // Get username or fallback
   const displayName = profile?.username || profile?.full_name?.split(" ")[0] || "there";
