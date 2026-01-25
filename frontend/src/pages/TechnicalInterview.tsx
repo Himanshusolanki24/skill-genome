@@ -248,7 +248,7 @@ const TechnicalInterview = () => {
                         Technical Interview
                     </h1>
                     <p className="text-muted-foreground mb-6">
-                        You'll answer {totalQuestions} questions based on your skill genome.
+                        You'll answer {totalQuestions} questions based on your GyaniX.
                         Each answer will be evaluated by AI in real-time.
                     </p>
 

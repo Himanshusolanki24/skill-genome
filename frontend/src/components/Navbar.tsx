@@ -64,7 +64,7 @@ export const Navbar = () => {
               <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
             <span className="font-display font-bold text-xl text-foreground">
-              Skill<span className="text-primary">Genome</span>
+              Gyani<span className="text-primary">X</span>
             </span>
           </Link>
 

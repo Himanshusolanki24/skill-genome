@@ -66,7 +66,7 @@ const steps = [
         step: 5,
         title: "Watch Yourself Evolve",
         description:
-            "Track your growth over time with beautiful visualizations. See your skill genome evolve as you complete tasks and build new competencies.",
+            "Track your growth over time with beautiful visualizations. See your GyaniX evolve as you complete tasks and build new competencies.",
         icon: TrendingUp,
         color: "from-purple-500 to-violet-500",
         features: ["Growth Analytics", "Skill Timeline", "Achievement System"],
@@ -146,7 +146,7 @@ const HowItWorks = () => {
 
                         <h1 className="font-display text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
                             How{" "}
-                            <span className="text-gradient-pink">Skill Genome</span>
+                            <span className="text-gradient-pink">GyaniX</span>
                             <br />
                             Works
                         </h1>
@@ -329,7 +329,7 @@ const HowItWorks = () => {
                         className="text-center mb-16"
                     >
                         <h2 className="font-display text-4xl font-bold text-foreground mb-4">
-                            Why Choose Skill Genome?
+                            Why Choose GyaniX?
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                             Built for developers who want to accelerate their growth
@@ -400,7 +400,7 @@ const HowItWorks = () => {
 
                             <Link to="/build">
                                 <Button variant="genome" size="xl" className="group">
-                                    Build Your Skill Genome
+                                    Build Your GyaniX
                                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                                 </Button>
                             </Link>

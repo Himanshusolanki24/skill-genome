@@ -1,0 +1,70 @@
+-- SQL Daily Tasks Questions
+
+-- BEGINNER (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('SQL', 'beginner', 'Write a SELECT statement to retrieve all columns from a table.', 'Use SELECT * FROM tablename', 10),
+('SQL', 'beginner', 'Write a query to select specific columns from a table.', 'Use SELECT col1, col2 FROM table', 10),
+('SQL', 'beginner', 'Write a WHERE clause to filter rows by a condition.', 'Use WHERE column = value', 10),
+('SQL', 'beginner', 'Write a query using ORDER BY to sort results ascending.', 'Use ORDER BY column ASC', 10),
+('SQL', 'beginner', 'Write a query to limit the number of rows returned.', 'Use LIMIT n', 10),
+('SQL', 'beginner', 'Write an INSERT statement to add a new row.', 'Use INSERT INTO table VALUES (...)', 10),
+('SQL', 'beginner', 'Write an UPDATE statement to modify existing data.', 'Use UPDATE table SET col = value', 10),
+('SQL', 'beginner', 'Write a DELETE statement to remove rows.', 'Use DELETE FROM table WHERE ...', 10),
+('SQL', 'beginner', 'Write a query using AND to combine multiple conditions.', 'Use WHERE cond1 AND cond2', 10),
+('SQL', 'beginner', 'Write a query using OR to check alternative conditions.', 'Use WHERE cond1 OR cond2', 10),
+('SQL', 'beginner', 'Write a query to find rows where a column IS NULL.', 'Use WHERE column IS NULL', 10),
+('SQL', 'beginner', 'Write a query using LIKE for pattern matching.', 'Use % for wildcards', 10),
+('SQL', 'beginner', 'Write a query to alias a column with AS.', 'Use SELECT col AS alias', 10),
+('SQL', 'beginner', 'Write a query using DISTINCT to get unique values.', 'Use SELECT DISTINCT column', 10),
+('SQL', 'beginner', 'Write a query to count the number of rows.', 'Use COUNT(*)', 10),
+('SQL', 'beginner', 'Write a query to find the maximum value in a column.', 'Use MAX(column)', 10),
+('SQL', 'beginner', 'Write a query to find the minimum value in a column.', 'Use MIN(column)', 10),
+('SQL', 'beginner', 'Write a query to calculate the sum of a column.', 'Use SUM(column)', 10),
+('SQL', 'beginner', 'Write a query to calculate the average of a column.', 'Use AVG(column)', 10),
+('SQL', 'beginner', 'Write a query using IN to check multiple values.', 'Use WHERE col IN (val1, val2)', 10);
+
+-- INTERMEDIATE (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('SQL', 'intermediate', 'Write a query with INNER JOIN to combine two tables.', 'Use JOIN ON matching columns', 20),
+('SQL', 'intermediate', 'Write a query with LEFT JOIN to include unmatched rows.', 'LEFT JOIN keeps all left table rows', 20),
+('SQL', 'intermediate', 'Write a query using GROUP BY to aggregate data.', 'Group by non-aggregated columns', 20),
+('SQL', 'intermediate', 'Write a query with HAVING to filter grouped results.', 'HAVING filters after GROUP BY', 20),
+('SQL', 'intermediate', 'Write a subquery in the WHERE clause.', 'Use (SELECT ...) as value', 20),
+('SQL', 'intermediate', 'Write a query using CASE for conditional logic.', 'Use CASE WHEN THEN ELSE END', 20),
+('SQL', 'intermediate', 'Write a query to find the second highest value.', 'Use subquery or OFFSET', 20),
+('SQL', 'intermediate', 'Write a UNION query to combine results from two queries.', 'UNION removes duplicates', 20),
+('SQL', 'intermediate', 'Write a query using RIGHT JOIN.', 'RIGHT JOIN keeps all right table rows', 20),
+('SQL', 'intermediate', 'Write a query to create a table with constraints.', 'Use PRIMARY KEY, NOT NULL', 20),
+('SQL', 'intermediate', 'Write a query using COALESCE to handle nulls.', 'COALESCE returns first non-null', 20),
+('SQL', 'intermediate', 'Write a query with multiple JOINs across three tables.', 'Chain JOIN statements', 20),
+('SQL', 'intermediate', 'Write a query using date functions.', 'Use DATE(), YEAR(), MONTH()', 20),
+('SQL', 'intermediate', 'Write a query to add an index to a table.', 'Use CREATE INDEX', 20),
+('SQL', 'intermediate', 'Write a correlated subquery.', 'Subquery references outer query', 20),
+('SQL', 'intermediate', 'Write a query using EXISTS clause.', 'EXISTS checks if subquery returns rows', 20),
+('SQL', 'intermediate', 'Write a query to update data using a JOIN.', 'UPDATE with FROM and JOIN', 20),
+('SQL', 'intermediate', 'Write a query using BETWEEN for range conditions.', 'Use BETWEEN val1 AND val2', 20),
+('SQL', 'intermediate', 'Write a self-join query.', 'Join table to itself with alias', 20),
+('SQL', 'intermediate', 'Write a query to find duplicates in a table.', 'GROUP BY and HAVING COUNT > 1', 20);
+
+-- ADVANCED (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('SQL', 'advanced', 'Write a query using window functions with PARTITION BY.', 'Use ROW_NUMBER(), RANK() etc', 30),
+('SQL', 'advanced', 'Write a recursive CTE to handle hierarchical data.', 'Use WITH RECURSIVE', 30),
+('SQL', 'advanced', 'Write a query to implement pagination efficiently.', 'Use OFFSET with keyset pagination', 30),
+('SQL', 'advanced', 'Write a query to pivot rows to columns.', 'Use CASE or PIVOT function', 30),
+('SQL', 'advanced', 'Write a query to find running totals.', 'Use SUM() OVER (ORDER BY)', 30),
+('SQL', 'advanced', 'Write a query to detect gaps in sequential data.', 'Compare with LAG() or LEAD()', 30),
+('SQL', 'advanced', 'Write a query using materialized views.', 'CREATE MATERIALIZED VIEW', 30),
+('SQL', 'advanced', 'Write a stored procedure with input parameters.', 'Use CREATE PROCEDURE', 30),
+('SQL', 'advanced', 'Write a trigger that fires on INSERT.', 'Use CREATE TRIGGER', 30),
+('SQL', 'advanced', 'Write a query to implement upsert (INSERT or UPDATE).', 'Use ON CONFLICT DO UPDATE', 30),
+('SQL', 'advanced', 'Write a query using LATERAL JOIN.', 'LATERAL allows correlated subqueries', 30),
+('SQL', 'advanced', 'Write a query to calculate moving averages.', 'Use AVG() OVER (ROWS BETWEEN)', 30),
+('SQL', 'advanced', 'Write a query for full-text search.', 'Use TSVECTOR and TSQUERY', 30),
+('SQL', 'advanced', 'Write a query to handle JSON data.', 'Use JSON functions like ->> or jsonb', 30),
+('SQL', 'advanced', 'Write a query to optimize with EXPLAIN ANALYZE.', 'Analyze query execution plan', 30),
+('SQL', 'advanced', 'Write a query implementing table partitioning.', 'Use PARTITION BY RANGE', 30),
+('SQL', 'advanced', 'Write a query using MERGE statement.', 'MERGE for conditional update/insert', 30),
+('SQL', 'advanced', 'Write a function that returns a table.', 'Use RETURNS TABLE', 30),
+('SQL', 'advanced', 'Write a query to implement soft deletes.', 'Use deleted_at timestamp column', 30),
+('SQL', 'advanced', 'Write a query to handle concurrent updates safely.', 'Use SELECT FOR UPDATE', 30);

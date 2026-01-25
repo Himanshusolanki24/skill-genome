@@ -116,7 +116,7 @@ const Interview = () => {
         {
             icon: Target,
             title: "Personalized Questions",
-            description: "Questions based on your extracted skill genome",
+            description: "Questions based on your extracted GyaniX",
         },
         {
             icon: Award,
@@ -180,7 +180,7 @@ const Interview = () => {
                         </h1>
 
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Practice with AI-driven mock interviews tailored to your skill genome.
+                            Practice with AI-driven mock interviews tailored to your GyaniX.
                             Get real-time feedback and ace your next opportunity.
                         </p>
                     </motion.div>
@@ -198,7 +198,7 @@ const Interview = () => {
                                 <div className="relative bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 p-6">
                                     <div className="flex items-center gap-2 mb-4">
                                         <Target className="w-5 h-5 text-primary" />
-                                        <h3 className="font-semibold text-foreground">Your Skill Genome</h3>
+                                        <h3 className="font-semibold text-foreground">Your GyaniX</h3>
                                         <span className="text-sm text-muted-foreground">
                                             ({extractedSkills.skills.length} skills detected)
                                         </span>

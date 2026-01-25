@@ -362,7 +362,7 @@ const Dashboard = () => {
           </motion.div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Skill Genome Chart */}
+            {/* GyaniX Chart */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -372,7 +372,7 @@ const Dashboard = () => {
               <Card variant="genome" className="h-full">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Your Skill Genome</CardTitle>
+                    <CardTitle>Your GyaniX</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                       {hasData
                         ? "Based on your interview performance"
@@ -381,7 +381,7 @@ const Dashboard = () => {
                   </div>
                   <Link to="/build">
                     <Button variant="genome-ghost" size="sm">
-                      Build Genome
+                      Build GyaniX
                       <ChevronRight className="w-4 h-4" />
                     </Button>
                   </Link>

@@ -19,7 +19,7 @@ const skillData = [
   { skill: "Testing", value: 55, fullMark: 100 },
 ];
 
-export const SkillGenomePreview = () => {
+export const GyaniXPreview = () => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -36,7 +36,7 @@ export const SkillGenomePreview = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-display font-semibold text-xl text-foreground">
-              Your Skill Genome
+              Your GyaniX
             </h3>
             <p className="text-muted-foreground text-sm">Live visualization demo</p>
           </div>

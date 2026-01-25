@@ -266,7 +266,7 @@ const BuildGenome = () => {
 
                         <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight">
                             Build Your{" "}
-                            <span className="text-gradient-pink">Skill Genome</span>
+                            <span className="text-gradient-pink">GyaniX</span>
                         </h1>
 
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -604,7 +604,7 @@ const BuildGenome = () => {
                                                     onClick={handleSubmit}
                                                 >
                                                     <Dna className="w-5 h-5" />
-                                                    Generate My Skill Genome
+                                                    Generate My GyaniX
                                                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                                                 </Button>
                                             </motion.div>

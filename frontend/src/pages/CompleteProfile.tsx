@@ -336,7 +336,7 @@ const CompleteProfile = () => {
                 title: isEditing ? "Profile updated! ✨" : "Profile completed! 🎉",
                 description: isEditing
                     ? "Your changes have been saved successfully."
-                    : "Welcome to Skill Genome. Let's build your skill genome!",
+                    : "Welcome to GyaniX. Let's build your GyaniX!",
             });
 
             navigate(isEditing ? "/profile" : "/build");

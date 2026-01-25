@@ -81,7 +81,7 @@ export const ProfileCompletionModal = ({
                                 <p className="text-center text-muted-foreground mb-6">
                                     Complete your profile to unlock personalized skill
                                     recommendations, connect with peers, and get the most out of
-                                    Skill Genome.
+                                    GyaniX.
                                 </p>
 
                                 {/* Benefits list */}

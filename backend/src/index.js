@@ -32,7 +32,7 @@ const upload = multer({
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "Skill Genome API is running" });
+    res.json({ status: "ok", message: "GyaniX API is running" });
 });
 
 // Auth routes
@@ -114,8 +114,7 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-// Start server
 app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🧬 Skill Genome API running on port ${PORT}`);
+    console.log(`🧬 GyaniX API running on port ${PORT}`);
     console.log(`📊 Health check: http://0.0.0.0:${PORT}/api/health`);
 });

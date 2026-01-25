@@ -539,7 +539,7 @@ const Profile = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-display font-semibold text-foreground">Send Feedback</h3>
-                      <p className="text-sm text-muted-foreground">Help us improve SkillGenome</p>
+                      <p className="text-sm text-muted-foreground">Help us improve GyaniX</p>
                     </div>
                   </div>
 

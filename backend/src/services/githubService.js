@@ -15,7 +15,7 @@ console.log(`GitHub Token configured: ${GITHUB_TOKEN ? 'Yes (length: ' + GITHUB_
 function getGitHubHeaders() {
     const headers = {
         Accept: "application/vnd.github.v3+json",
-        "User-Agent": "SkillGenome-App",
+        "User-Agent": "GyaniX-App",
     };
 
     if (GITHUB_TOKEN) {

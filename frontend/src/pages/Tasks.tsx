@@ -44,7 +44,7 @@ const difficultyLabels = {
   advanced: "Advanced",
 };
 
-const TECHNOLOGIES = ["all", "JavaScript", "TypeScript", "HTML", "CSS", "React", "C", "Python"];
+const TECHNOLOGIES = ["all", "JavaScript", "TypeScript", "HTML", "CSS", "React", "Python", "C", "C++", "Node.js", "Java", "SQL", "AI/ML"];
 
 const Tasks = () => {
   const { user } = useAuth();

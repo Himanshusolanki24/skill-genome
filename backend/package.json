@@ -1,7 +1,7 @@
 {
-  "name": "skill-genome-backend",
+  "name": "gyanix-backend",
   "version": "1.0.0",
-  "description": "Backend API for Skill Genome - GitHub skill extraction and resume parsing",
+  "description": "Backend API for GyaniX - GitHub skill extraction and resume parsing",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

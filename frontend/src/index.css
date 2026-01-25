@@ -12,7 +12,7 @@
 
 @layer base {
   :root {
-    /* Skill Genome - Dark Theme Primary */
+    /* GyaniX - Dark Theme Primary */
     --background: 240 5% 11%;
     --foreground: 0 0% 98%;
 
@@ -44,7 +44,7 @@
 
     --radius: 0.75rem;
 
-    /* Custom Skill Genome Colors */
+    /* Custom GyaniX Colors */
     --genome-pink: 330 94% 73%;
     --genome-pink-glow: 330 100% 80%;
     --genome-dark: 240 5% 11%;

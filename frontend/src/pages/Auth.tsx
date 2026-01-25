@@ -156,7 +156,7 @@ const Auth = () => {
                                 </motion.div>
 
                                 <h1 className="font-display text-3xl font-bold text-foreground mb-3">
-                                    Welcome to Skill Genome
+                                    Welcome to GyaniX
                                 </h1>
                                 <p className="text-muted-foreground">
                                     Sign in to unlock your potential with AI-driven skill evolution

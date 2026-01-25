@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NeuralBackground } from "@/components/NeuralBackground";
-import { SkillGenomePreview } from "@/components/SkillGenomePreview";
+import { GyaniXPreview } from "@/components/GyaniXPreview";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import {
@@ -110,7 +110,7 @@ const Index = () => {
             >
               <Link to="/build">
                 <Button variant="genome" size="xl" className="group">
-                  Build My Skill Genome
+                  Build My GyaniX
                   <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -279,7 +279,7 @@ const Index = () => {
               </div>
             </motion.div>
 
-            <SkillGenomePreview />
+            <GyaniXPreview />
           </div>
         </div>
       </section>

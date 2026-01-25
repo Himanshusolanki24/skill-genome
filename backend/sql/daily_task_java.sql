@@ -1,0 +1,70 @@
+-- Java Daily Tasks Questions
+
+-- BEGINNER (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Java', 'beginner', 'Write a Java program that prints "Hello, World!" to the console.', 'Use System.out.println()', 10),
+('Java', 'beginner', 'Create a variable to store your age and print it.', 'Use int datatype', 10),
+('Java', 'beginner', 'Write a program that adds two numbers and displays the result.', 'Use + operator', 10),
+('Java', 'beginner', 'Create an array of 5 integers and print each element.', 'Use a for loop', 10),
+('Java', 'beginner', 'Write a program using if-else to check if a number is positive or negative.', 'Compare with 0', 10),
+('Java', 'beginner', 'Create a simple class with a constructor and one method.', 'Use public class', 10),
+('Java', 'beginner', 'Write a for loop that prints numbers from 1 to 10.', 'Use for(int i=1; i<=10; i++)', 10),
+('Java', 'beginner', 'Create a String variable and find its length.', 'Use .length() method', 10),
+('Java', 'beginner', 'Write a program that converts Celsius to Fahrenheit.', 'Formula: F = (C * 9/5) + 32', 10),
+('Java', 'beginner', 'Create a while loop that counts down from 10 to 1.', 'Use while(count > 0)', 10),
+('Java', 'beginner', 'Write a method that takes two integers and returns their sum.', 'Use return statement', 10),
+('Java', 'beginner', 'Create an object of a class and call its method.', 'Use new keyword', 10),
+('Java', 'beginner', 'Write a program to check if a number is even or odd.', 'Use modulo operator %', 10),
+('Java', 'beginner', 'Create a simple switch statement for days of the week.', 'Use switch-case', 10),
+('Java', 'beginner', 'Write a program that concatenates two strings.', 'Use + or concat()', 10),
+('Java', 'beginner', 'Create an ArrayList and add 5 elements to it.', 'Use ArrayList<>', 10),
+('Java', 'beginner', 'Write code to read user input using Scanner.', 'Import java.util.Scanner', 10),
+('Java', 'beginner', 'Create a program that finds the maximum of three numbers.', 'Use Math.max() or if statements', 10),
+('Java', 'beginner', 'Write a do-while loop that runs at least once.', 'Use do { } while()', 10),
+('Java', 'beginner', 'Create a method with parameters and call it from main.', 'Define method signature properly', 10);
+
+-- INTERMEDIATE (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Java', 'intermediate', 'Implement a class with inheritance using extends.', 'Child class extends Parent class', 20),
+('Java', 'intermediate', 'Write a program demonstrating method overloading.', 'Same method name, different parameters', 20),
+('Java', 'intermediate', 'Create an interface and implement it in a class.', 'Use implements keyword', 20),
+('Java', 'intermediate', 'Write a program using try-catch for exception handling.', 'Catch specific exceptions', 20),
+('Java', 'intermediate', 'Implement a program that reads from a file.', 'Use FileReader or BufferedReader', 20),
+('Java', 'intermediate', 'Create a HashMap and perform basic operations.', 'Use put(), get(), remove()', 20),
+('Java', 'intermediate', 'Write a program using abstract class.', 'Use abstract keyword', 20),
+('Java', 'intermediate', 'Implement a simple thread using Runnable interface.', 'Override run() method', 20),
+('Java', 'intermediate', 'Create a custom exception class.', 'Extend Exception class', 20),
+('Java', 'intermediate', 'Write a program using lambda expressions.', 'Use -> arrow syntax', 20),
+('Java', 'intermediate', 'Implement a program using Java Streams API.', 'Use .stream() on collections', 20),
+('Java', 'intermediate', 'Create a program demonstrating polymorphism.', 'Parent reference, child object', 20),
+('Java', 'intermediate', 'Write a recursive method to calculate factorial.', 'n * factorial(n-1)', 20),
+('Java', 'intermediate', 'Implement Comparable interface for sorting objects.', 'Override compareTo()', 20),
+('Java', 'intermediate', 'Create a program using Optional to handle null.', 'Use Optional.ofNullable()', 20),
+('Java', 'intermediate', 'Write a program demonstrating method overriding.', 'Use @Override annotation', 20),
+('Java', 'intermediate', 'Implement a singleton design pattern.', 'Private constructor, static instance', 20),
+('Java', 'intermediate', 'Create a program using LinkedList operations.', 'Use addFirst(), addLast()', 20),
+('Java', 'intermediate', 'Write a program using enum with methods.', 'Define enum with behavior', 20),
+('Java', 'intermediate', 'Implement a binary search algorithm in Java.', 'Divide and conquer approach', 20);
+
+-- ADVANCED (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('Java', 'advanced', 'Implement a thread-safe singleton using double-checked locking.', 'Use volatile and synchronized', 30),
+('Java', 'advanced', 'Create a custom annotation and use reflection to process it.', 'Use @interface and getDeclaredAnnotations()', 30),
+('Java', 'advanced', 'Implement a producer-consumer problem using wait/notify.', 'Use synchronized blocks', 30),
+('Java', 'advanced', 'Write a program using CompletableFuture for async operations.', 'Use supplyAsync() and thenApply()', 30),
+('Java', 'advanced', 'Implement a custom generic class with bounded type parameters.', 'Use <T extends Comparable<T>>', 30),
+('Java', 'advanced', 'Create a connection pool implementation.', 'Manage limited connections', 30),
+('Java', 'advanced', 'Write a program using Java NIO for file operations.', 'Use Files and Paths classes', 30),
+('Java', 'advanced', 'Implement the Observer design pattern.', 'Subject notifies observers', 30),
+('Java', 'advanced', 'Create a custom ClassLoader in Java.', 'Extend ClassLoader and override findClass()', 30),
+('Java', 'advanced', 'Write a program demonstrating deadlock and how to prevent it.', 'Lock ordering strategy', 30),
+('Java', 'advanced', 'Implement a LRU cache using LinkedHashMap.', 'Override removeEldestEntry()', 30),
+('Java', 'advanced', 'Create a program using Executor framework for thread pools.', 'Use Executors.newFixedThreadPool()', 30),
+('Java', 'advanced', 'Implement the Factory design pattern.', 'Create objects without exposing logic', 30),
+('Java', 'advanced', 'Write a program using Streams parallel processing.', 'Use parallelStream()', 30),
+('Java', 'advanced', 'Implement a custom serialization mechanism.', 'Use Externalizable interface', 30),
+('Java', 'advanced', 'Create a program using Java Reflection to invoke methods.', 'Use Method.invoke()', 30),
+('Java', 'advanced', 'Implement the Builder design pattern with fluent API.', 'Return this for chaining', 30),
+('Java', 'advanced', 'Write a program handling concurrent modifications safely.', 'Use ConcurrentHashMap', 30),
+('Java', 'advanced', 'Implement a dependency injection framework prototype.', 'Use reflection and annotations', 30),
+('Java', 'advanced', 'Create a memory-efficient data structure for large datasets.', 'Consider memory footprint', 30);

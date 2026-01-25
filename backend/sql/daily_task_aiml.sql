@@ -1,0 +1,70 @@
+-- AI/ML Daily Tasks Questions
+
+-- BEGINNER (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('AI/ML', 'beginner', 'Explain the difference between supervised and unsupervised learning.', 'Labeled vs unlabeled data', 10),
+('AI/ML', 'beginner', 'Write Python code to load a dataset using pandas.', 'Use pd.read_csv()', 10),
+('AI/ML', 'beginner', 'Explain what overfitting means in machine learning.', 'Model memorizes instead of generalizing', 10),
+('AI/ML', 'beginner', 'Write code to split data into training and testing sets.', 'Use train_test_split from sklearn', 10),
+('AI/ML', 'beginner', 'Explain what a feature and a label are.', 'Feature is input, label is output', 10),
+('AI/ML', 'beginner', 'Write code to normalize data using MinMaxScaler.', 'Scale values to 0-1 range', 10),
+('AI/ML', 'beginner', 'Explain the concept of training and testing data.', 'Train to learn, test to evaluate', 10),
+('AI/ML', 'beginner', 'Write code to create a simple linear regression model.', 'Use LinearRegression from sklearn', 10),
+('AI/ML', 'beginner', 'Explain what accuracy means as a metric.', 'Correct predictions / total predictions', 10),
+('AI/ML', 'beginner', 'Write code to visualize data using matplotlib.', 'Use plt.scatter() or plt.plot()', 10),
+('AI/ML', 'beginner', 'Explain the difference between classification and regression.', 'Categories vs continuous values', 10),
+('AI/ML', 'beginner', 'Write code to handle missing values in a dataset.', 'Use fillna() or dropna()', 10),
+('AI/ML', 'beginner', 'Explain what a decision tree is.', 'Tree of if-else conditions', 10),
+('AI/ML', 'beginner', 'Write code to encode categorical variables.', 'Use LabelEncoder or OneHotEncoder', 10),
+('AI/ML', 'beginner', 'Explain what k-NN algorithm does.', 'Classify based on nearest k neighbors', 10),
+('AI/ML', 'beginner', 'Write code to calculate correlation between features.', 'Use df.corr()', 10),
+('AI/ML', 'beginner', 'Explain what a confusion matrix shows.', 'True/false positives and negatives', 10),
+('AI/ML', 'beginner', 'Write code to create a simple neural network layer.', 'Use keras Dense layer', 10),
+('AI/ML', 'beginner', 'Explain bias vs variance tradeoff.', 'Underfitting vs overfitting', 10),
+('AI/ML', 'beginner', 'Write code to make predictions using a trained model.', 'Use model.predict()', 10);
+
+-- INTERMEDIATE (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('AI/ML', 'intermediate', 'Implement cross-validation for model evaluation.', 'Use cross_val_score from sklearn', 20),
+('AI/ML', 'intermediate', 'Write code to tune hyperparameters using GridSearchCV.', 'Search over parameter grid', 20),
+('AI/ML', 'intermediate', 'Implement a Random Forest classifier.', 'Use RandomForestClassifier', 20),
+('AI/ML', 'intermediate', 'Explain and implement regularization (L1/L2).', 'Penalty terms to prevent overfitting', 20),
+('AI/ML', 'intermediate', 'Write code for feature selection using correlation.', 'Remove highly correlated features', 20),
+('AI/ML', 'intermediate', 'Implement a Support Vector Machine classifier.', 'Use SVC from sklearn', 20),
+('AI/ML', 'intermediate', 'Explain and implement PCA for dimensionality reduction.', 'Principal Component Analysis', 20),
+('AI/ML', 'intermediate', 'Write code to handle class imbalance.', 'Use SMOTE or class_weight', 20),
+('AI/ML', 'intermediate', 'Implement k-means clustering algorithm.', 'Use KMeans from sklearn', 20),
+('AI/ML', 'intermediate', 'Explain ROC curve and AUC score.', 'True positive rate vs false positive rate', 20),
+('AI/ML', 'intermediate', 'Write code to create an ensemble model.', 'Combine multiple models', 20),
+('AI/ML', 'intermediate', 'Implement gradient descent from scratch.', 'Update weights by gradient', 20),
+('AI/ML', 'intermediate', 'Explain and implement batch normalization.', 'Normalize layer inputs', 20),
+('AI/ML', 'intermediate', 'Write code for text preprocessing in NLP.', 'Tokenize, remove stopwords, stem', 20),
+('AI/ML', 'intermediate', 'Implement a multi-layer perceptron.', 'Use MLPClassifier or keras', 20),
+('AI/ML', 'intermediate', 'Explain dropout and implement it.', 'Randomly disable neurons during training', 20),
+('AI/ML', 'intermediate', 'Write code to save and load a trained model.', 'Use joblib or pickle', 20),
+('AI/ML', 'intermediate', 'Implement learning rate scheduling.', 'Decrease LR over epochs', 20),
+('AI/ML', 'intermediate', 'Explain precision, recall, and F1 score.', 'Metrics for imbalanced classes', 20),
+('AI/ML', 'intermediate', 'Write code for image data augmentation.', 'Rotate, flip, zoom images', 20);
+
+-- ADVANCED (20 questions)
+INSERT INTO daily_tasks (technology, difficulty, question, hint, xp_reward) VALUES
+('AI/ML', 'advanced', 'Implement a Convolutional Neural Network for image classification.', 'Use Conv2D, MaxPooling2D layers', 30),
+('AI/ML', 'advanced', 'Build an LSTM model for sequence prediction.', 'Use LSTM layer for temporal data', 30),
+('AI/ML', 'advanced', 'Implement transfer learning using a pretrained model.', 'Use VGG16, ResNet, etc.', 30),
+('AI/ML', 'advanced', 'Build a Transformer model for NLP tasks.', 'Use attention mechanism', 30),
+('AI/ML', 'advanced', 'Implement a Generative Adversarial Network (GAN).', 'Generator vs Discriminator', 30),
+('AI/ML', 'advanced', 'Build a recommendation system using collaborative filtering.', 'User-item interactions', 30),
+('AI/ML', 'advanced', 'Implement attention mechanism from scratch.', 'Query, Key, Value matrices', 30),
+('AI/ML', 'advanced', 'Build a reinforcement learning agent with Q-learning.', 'Learn policy from rewards', 30),
+('AI/ML', 'advanced', 'Implement Word2Vec for word embeddings.', 'Skip-gram or CBOW architecture', 30),
+('AI/ML', 'advanced', 'Build a variational autoencoder (VAE).', 'Encoder-decoder with latent space', 30),
+('AI/ML', 'advanced', 'Implement BERT fine-tuning for text classification.', 'Use HuggingFace transformers', 30),
+('AI/ML', 'advanced', 'Build an object detection model using YOLO.', 'Real-time object detection', 30),
+('AI/ML', 'advanced', 'Implement model interpretability with SHAP values.', 'Explain model predictions', 30),
+('AI/ML', 'advanced', 'Build a neural machine translation system.', 'Seq2seq with attention', 30),
+('AI/ML', 'advanced', 'Implement federated learning concepts.', 'Train on decentralized data', 30),
+('AI/ML', 'advanced', 'Build a time series forecasting model with Prophet.', 'Handle seasonality and trends', 30),
+('AI/ML', 'advanced', 'Implement model pruning for optimization.', 'Remove unnecessary weights', 30),
+('AI/ML', 'advanced', 'Build a speech recognition system.', 'Audio to text conversion', 30),
+('AI/ML', 'advanced', 'Implement knowledge distillation.', 'Transfer knowledge from large to small model', 30),
+('AI/ML', 'advanced', 'Build an end-to-end ML pipeline with MLflow.', 'Track experiments and deploy', 30);

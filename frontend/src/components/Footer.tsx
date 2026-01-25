@@ -121,7 +121,7 @@ export const Footer = () => {
 
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Skill Genome. All rights reserved.
+            © {new Date().getFullYear()} GyaniX. All rights reserved.
           </p>
           {/* <p className="text-muted-foreground text-sm">
             Built with 💗 for continuous learners
