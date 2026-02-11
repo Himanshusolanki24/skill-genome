@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { API_BASE_URL, parseApiResponse } from "@/lib/api";
+import { useMediaPipe } from "@/hooks/useMediaPipe";
+import { BodyLanguageAnalyzer } from "@/components/BodyLanguageAnalyzer";
+import { BodyLanguageReport } from "@/components/BodyLanguageReport";
+import { Camera, CameraOff } from "lucide-react";
 
 interface Skill {
     name: string;
@@ -48,6 +52,13 @@ interface AnswerResult {
 const TechnicalInterview = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+
+    // MediaPipe webcam refs & state
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [cameraEnabled, setCameraEnabled] = useState(false);
+    const { metrics, isReady: mpReady, isLoading: mpLoading, error: mpError, getSessionAverages, resetSessionAverages } = useMediaPipe(videoRef, canvasRef, cameraEnabled);
+    const [bodyLanguageScores, setBodyLanguageScores] = useState<{ eyeContactScore: number; expressionScore: number; headStabilityScore: number; confidenceScore: number } | null>(null);
 
     // State
     const [skills, setSkills] = useState<Skill[]>([]);
@@ -166,6 +177,10 @@ const TechnicalInterview = () => {
             setShowEvaluation(true);
 
             if (data.data.isComplete) {
+                // Capture body language session averages before completing
+                const blScores = getSessionAverages();
+                if (blScores) setBodyLanguageScores(blScores);
+
                 // Interview complete
                 setIsComplete(true);
                 setAverageScore(data.data.averageScore);
@@ -288,6 +303,40 @@ const TechnicalInterview = () => {
                         </div>
                     )}
 
+                    {/* Camera toggle */}
+                    <div className="mb-6">
+                        <button
+                            type="button"
+                            onClick={() => setCameraEnabled(!cameraEnabled)}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300 ${cameraEnabled
+                                    ? "bg-violet-500/10 border-violet-500/30 text-violet-300"
+                                    : "bg-muted/50 border-border/50 text-muted-foreground hover:border-violet-500/30 hover:text-violet-300"
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                {cameraEnabled ? (
+                                    <Camera className="w-5 h-5 text-violet-400" />
+                                ) : (
+                                    <CameraOff className="w-5 h-5" />
+                                )}
+                                <div className="text-left">
+                                    <div className="text-sm font-medium">
+                                        Body Language Analysis
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                        Enable camera for real-time eye contact & expression tracking
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                className={`w-10 h-6 rounded-full transition-colors duration-300 flex items-center px-0.5 ${cameraEnabled ? "bg-violet-500 justify-end" : "bg-muted justify-start"
+                                    }`}
+                            >
+                                <div className="w-5 h-5 rounded-full bg-white shadow-md" />
+                            </div>
+                        </button>
+                    </div>
+
                     <Button
                         variant="genome"
                         size="lg"
@@ -321,141 +370,157 @@ const TechnicalInterview = () => {
 
     // Render question screen
     const renderQuestionScreen = () => (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto"
-        >
-            {/* Progress bar */}
-            <div className="mb-8">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-foreground">
-                        Question {currentQuestionNumber} of {totalQuestions}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                        {Math.round((currentQuestionNumber / totalQuestions) * 100)}% complete
-                    </span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(currentQuestionNumber / totalQuestions) * 100}%` }}
-                        className="h-full bg-gradient-to-r from-primary to-purple-500 rounded-full"
-                        transition={{ duration: 0.5 }}
-                    />
-                </div>
-            </div>
-
-            {/* Question card */}
-            <div className="relative group mb-6">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-2xl opacity-50 blur-sm" />
-                <div className="relative bg-card/90 backdrop-blur-xl rounded-2xl border border-border/50 p-8">
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                            <Target className="w-4 h-4 text-primary" />
-                        </div>
-                        <span className="text-sm font-medium text-primary">
-                            Question {currentQuestionNumber}
+        <div className={`max-w-5xl mx-auto ${cameraEnabled ? 'grid grid-cols-1 lg:grid-cols-3 gap-6' : ''}`}>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={cameraEnabled ? 'lg:col-span-2' : 'max-w-3xl mx-auto'}
+            >
+                {/* Progress bar */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-foreground">
+                            Question {currentQuestionNumber} of {totalQuestions}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                            {Math.round((currentQuestionNumber / totalQuestions) * 100)}% complete
                         </span>
                     </div>
-
-                    <h2 className="text-xl font-semibold text-foreground mb-6 leading-relaxed">
-                        {currentQuestion}
-                    </h2>
-
-                    {error && (
-                        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
-                            <div className="flex items-center gap-2 text-red-400">
-                                <AlertCircle className="w-4 h-4" />
-                                <p className="text-sm">{error}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    <textarea
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        placeholder="Type your answer here..."
-                        rows={6}
-                        disabled={isLoading || showEvaluation}
-                        className="w-full bg-background/50 border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none"
-                    />
-
-                    <div className="flex justify-end mt-4">
-                        <Button
-                            variant="genome"
-                            size="lg"
-                            onClick={submitAnswer}
-                            disabled={isLoading || !answer.trim() || showEvaluation}
-                            className="group"
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                    {loadingMessage}
-                                </>
-                            ) : (
-                                <>
-                                    Submit Answer
-                                    <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                                </>
-                            )}
-                        </Button>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(currentQuestionNumber / totalQuestions) * 100}%` }}
+                            className="h-full bg-gradient-to-r from-primary to-purple-500 rounded-full"
+                            transition={{ duration: 0.5 }}
+                        />
                     </div>
                 </div>
-            </div>
 
-            {/* Evaluation popup */}
-            <AnimatePresence>
-                {showEvaluation && lastEvaluation && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
-                    >
-                        <motion.div
-                            initial={{ y: 20 }}
-                            animate={{ y: 0 }}
-                            className="max-w-lg mx-4"
-                        >
-                            <div className={`relative bg-card/95 backdrop-blur-xl rounded-2xl border ${getScoreBg(lastEvaluation.score)} p-8 text-center`}>
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2, type: "spring" }}
-                                    className={`w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r ${getScoreBg(lastEvaluation.score)} flex items-center justify-center`}
-                                >
-                                    <span className={`text-4xl font-bold ${getScoreColor(lastEvaluation.score)}`}>
-                                        {lastEvaluation.score}
-                                    </span>
-                                </motion.div>
-
-                                <h3 className="text-xl font-semibold text-foreground mb-2">
-                                    {lastEvaluation.score >= 8
-                                        ? "Excellent!"
-                                        : lastEvaluation.score >= 6
-                                            ? "Good Job!"
-                                            : lastEvaluation.score >= 4
-                                                ? "Keep Improving"
-                                                : "Needs Work"}
-                                </h3>
-
-                                <p className="text-muted-foreground mb-4">
-                                    {lastEvaluation.feedback}
-                                </p>
-
-                                {!isComplete && (
-                                    <p className="text-sm text-primary animate-pulse">
-                                        Loading next question...
-                                    </p>
-                                )}
+                {/* Question card */}
+                <div className="relative group mb-6">
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-2xl opacity-50 blur-sm" />
+                    <div className="relative bg-card/90 backdrop-blur-xl rounded-2xl border border-border/50 p-8">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                                <Target className="w-4 h-4 text-primary" />
                             </div>
+                            <span className="text-sm font-medium text-primary">
+                                Question {currentQuestionNumber}
+                            </span>
+                        </div>
+
+                        <h2 className="text-xl font-semibold text-foreground mb-6 leading-relaxed">
+                            {currentQuestion}
+                        </h2>
+
+                        {error && (
+                            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                                <div className="flex items-center gap-2 text-red-400">
+                                    <AlertCircle className="w-4 h-4" />
+                                    <p className="text-sm">{error}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        <textarea
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            placeholder="Type your answer here..."
+                            rows={6}
+                            disabled={isLoading || showEvaluation}
+                            className="w-full bg-background/50 border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none"
+                        />
+
+                        <div className="flex justify-end mt-4">
+                            <Button
+                                variant="genome"
+                                size="lg"
+                                onClick={submitAnswer}
+                                disabled={isLoading || !answer.trim() || showEvaluation}
+                                className="group"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        {loadingMessage}
+                                    </>
+                                ) : (
+                                    <>
+                                        Submit Answer
+                                        <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Evaluation popup */}
+                <AnimatePresence>
+                    {showEvaluation && lastEvaluation && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+                        >
+                            <motion.div
+                                initial={{ y: 20 }}
+                                animate={{ y: 0 }}
+                                className="max-w-lg mx-4"
+                            >
+                                <div className={`relative bg-card/95 backdrop-blur-xl rounded-2xl border ${getScoreBg(lastEvaluation.score)} p-8 text-center`}>
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.2, type: "spring" }}
+                                        className={`w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r ${getScoreBg(lastEvaluation.score)} flex items-center justify-center`}
+                                    >
+                                        <span className={`text-4xl font-bold ${getScoreColor(lastEvaluation.score)}`}>
+                                            {lastEvaluation.score}
+                                        </span>
+                                    </motion.div>
+
+                                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                                        {lastEvaluation.score >= 8
+                                            ? "Excellent!"
+                                            : lastEvaluation.score >= 6
+                                                ? "Good Job!"
+                                                : lastEvaluation.score >= 4
+                                                    ? "Keep Improving"
+                                                    : "Needs Work"}
+                                    </h3>
+
+                                    <p className="text-muted-foreground mb-4">
+                                        {lastEvaluation.feedback}
+                                    </p>
+
+                                    {!isComplete && (
+                                        <p className="text-sm text-primary animate-pulse">
+                                            Loading next question...
+                                        </p>
+                                    )}
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+
+            {/* Camera panel */}
+            {cameraEnabled && (
+                <div className="hidden lg:block">
+                    <BodyLanguageAnalyzer
+                        videoRef={videoRef}
+                        canvasRef={canvasRef}
+                        metrics={metrics}
+                        isReady={mpReady}
+                        isLoading={mpLoading}
+                        error={mpError}
+                    />
+                </div>
+            )}
+        </div>
     );
 
     // Render results screen
@@ -513,6 +578,13 @@ const TechnicalInterview = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Body Language Report */}
+            {bodyLanguageScores && (
+                <div className="mb-8">
+                    <BodyLanguageReport scores={bodyLanguageScores} />
+                </div>
+            )}
 
             {/* Individual results */}
             <h2 className="text-xl font-semibold text-foreground mb-4">

@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Dna, LayoutDashboard, Target, BarChart3, User, LogOut, ChevronDown, Settings, Sun, Moon } from "lucide-react";
+import { Dna, LayoutDashboard, Target, BarChart3, User, LogOut, ChevronDown, Settings, Sun, Moon, Mic } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const navItems = [
   { path: "/", label: "Home", icon: Dna },
   { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/interview", label: "Interview", icon: Mic },
   { path: "/tasks", label: "Daily Tasks", icon: Target },
   { path: "/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/profile", label: "Profile", icon: User },

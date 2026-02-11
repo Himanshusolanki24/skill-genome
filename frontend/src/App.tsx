@@ -19,6 +19,9 @@ import Interview from "./pages/Interview";
 import TechnicalInterview from "./pages/TechnicalInterview";
 import CompleteProfile from "./pages/CompleteProfile";
 import TaskDetail from "./pages/TaskDetail";
+import SkillGenomeReport from "./pages/SkillGenomeReport";
+import GrowthRoadmap from "./pages/GrowthRoadmap";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +76,9 @@ const AppContent = () => {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/skill-genome-report" element={<SkillGenomeReport />} />
+        <Route path="/growth-roadmap" element={<GrowthRoadmap />} />
+        <Route path="/about" element={<About />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

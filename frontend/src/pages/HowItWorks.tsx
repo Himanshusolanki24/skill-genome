@@ -22,54 +22,116 @@ import {
     ArrowRight,
     Code,
     FileText,
+    LogIn,
+    Video,
+    Eye,
+    ScanFace,
+    Mic,
+    PieChart,
+    Map,
 } from "lucide-react";
 import { useRef } from "react";
 
 const steps = [
     {
         step: 1,
-        title: "Connect Your Profile",
+        title: "User Logs In",
         description:
-            "Link your GitHub account or upload your resume. Our AI scans your repositories, commits, and experience to understand your technical journey.",
-        icon: GitBranch,
+            "Sign in securely via email or social login. Your profile is created with encrypted credentials, and all data stays private throughout your journey.",
+        icon: LogIn,
         color: "from-blue-500 to-cyan-500",
-        features: ["GitHub Integration", "Resume Parsing", "LinkedIn Sync"],
+        features: ["Secure Auth", "OAuth / Email", "Privacy First"],
     },
     {
         step: 2,
-        title: "AI Skill Mapping",
+        title: "Resume + GitHub Parsed",
         description:
-            "Our advanced AI creates a living genome map of your skills, showing connections between technologies and proficiency levels in real-time.",
-        icon: Dna,
+            "Upload your resume or link your GitHub. Our NLP engine extracts skills, detects your tech stack, and compares claimed skills vs actual work in your repos.",
+        icon: GitBranch,
         color: "from-primary to-pink-400",
-        features: ["50+ Skill Categories", "Proficiency Scoring", "Skill Relationships"],
+        features: ["Resume NLP", "Tech Stack Detection", "Skill Verification"],
     },
     {
         step: 3,
-        title: "Weakness Detection",
+        title: "AI Interview Starts",
         description:
-            "Identify skill gaps that might be holding you back. Get precise insights into areas where focused improvement can accelerate your career.",
-        icon: Target,
-        color: "from-orange-500 to-yellow-500",
-        features: ["Gap Analysis", "Priority Ranking", "Industry Benchmarks"],
+            "Begin a real-time webcam + microphone interview. The AI asks adaptive technical and behavioral questions tailored to your extracted skill genome.",
+        icon: Video,
+        color: "from-purple-500 to-violet-500",
+        features: ["Webcam + Mic", "Adaptive Questions", "Real-Time Feedback"],
     },
     {
         step: 4,
-        title: "Personalized Tasks",
+        title: "MediaPipe Analyzes Body Language",
         description:
-            "Receive daily micro-tasks tailored to your skill gaps. Each task is designed to be completable in 15-30 minutes for consistent growth.",
-        icon: Zap,
-        color: "from-green-500 to-emerald-500",
-        features: ["Daily Challenges", "Adaptive Difficulty", "Progress Tracking"],
+            "Google's MediaPipe Holistic tracks your eye contact, facial expressions, head stability, posture, and hand movements in real time — right in the browser.",
+        icon: ScanFace,
+        color: "from-orange-500 to-yellow-500",
+        features: ["Eye Gaze Tracking", "Expression Analysis", "Posture Detection"],
     },
     {
         step: 5,
-        title: "Watch Yourself Evolve",
+        title: "NLP Evaluates Communication",
         description:
-            "Track your growth over time with beautiful visualizations. See your GyaniX evolve as you complete tasks and build new competencies.",
-        icon: TrendingUp,
-        color: "from-purple-500 to-violet-500",
-        features: ["Growth Analytics", "Skill Timeline", "Achievement System"],
+            "Speech clarity, filler words (uh, um, like), speaking pace, and pause patterns are analyzed. You receive a communication confidence score with improvement tips.",
+        icon: Mic,
+        color: "from-green-500 to-emerald-500",
+        features: ["Filler Detection", "Speech Pace", "Clarity Score"],
+    },
+    {
+        step: 6,
+        title: "Scores Aggregated",
+        description:
+            "Technical accuracy, body language scores, communication metrics, and consistency data are combined into a holistic, bias-free evaluation — no college or appearance bias.",
+        icon: PieChart,
+        color: "from-pink-500 to-rose-500",
+        features: ["Holistic Scoring", "Bias-Free", "Multi-Signal Fusion"],
+    },
+    {
+        step: 7,
+        title: "Skill Genome Generated",
+        description:
+            "Your unique Skill Genome Map is created — a radar chart, skill heatmap, and strength/weakness summary across 6 dimensions: Technical, Communication, Confidence, Problem Solving, Consistency, and Learning Ability.",
+        icon: Dna,
+        color: "from-indigo-500 to-blue-500",
+        features: ["Radar Chart", "Skill Heatmap", "Strength Summary"],
+    },
+    {
+        step: 8,
+        title: "Growth Roadmap Suggested",
+        description:
+            "Based on your Skill Genome, receive a personalized growth roadmap with custom learning paths, communication exercises, mock interview feedback, and suggested projects.",
+        icon: Map,
+        color: "from-teal-500 to-cyan-500",
+        features: ["Learning Path", "Communication Drills", "Project Ideas"],
+    },
+];
+
+const mlModels = [
+    {
+        name: "MediaPipe Holistic",
+        description: "Body, face, hands, and iris landmark detection by Google",
+        icon: ScanFace,
+    },
+    {
+        name: "Eye Gaze Estimation",
+        description: "Real-time iris direction and focus analysis model",
+        icon: Eye,
+    },
+    {
+        name: "Facial Expression Classifier",
+        description: "Detects confidence, nervousness, and engagement cues",
+        icon: Brain,
+    },
+    {
+        name: "Speech-to-Text Model",
+        description: "Transcribes and analyzes spoken answers for clarity",
+        icon: Mic,
+    },
+    {
+        name: "Confidence Scoring Model",
+        description: "Multi-signal fusion of posture, speech, and accuracy data",
+        icon: Award,
     },
 ];
 
@@ -81,8 +143,8 @@ const benefits = [
     },
     {
         icon: Shield,
-        title: "Privacy First",
-        description: "Your data is encrypted and never shared with third parties",
+        title: "Bias-Free Evaluation",
+        description: "No college, appearance, or demographic bias — skills only",
     },
     {
         icon: Users,
@@ -100,7 +162,7 @@ const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: 0.15 },
+        transition: { staggerChildren: 0.12 },
     },
 };
 
@@ -141,19 +203,19 @@ const HowItWorks = () => {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6"
                         >
                             <Sparkles className="w-4 h-4" />
-                            <span>The Science of Skill Evolution</span>
+                            <span>8-Step System Architecture</span>
                         </motion.div>
 
                         <h1 className="font-display text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
                             How{" "}
-                            <span className="text-gradient-pink">GyaniX</span>
+                            <span className="text-gradient-pink">Skill Genome</span>
                             <br />
                             Works
                         </h1>
 
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                            A revolutionary approach to skill development powered by AI,
-                            data-driven insights, and personalized learning paths.
+                            From login to growth roadmap — see how our AI evaluates candidates
+                            holistically using resume analysis, live interviews, body language, and communication feedback.
                         </p>
 
                         <motion.div
@@ -166,6 +228,12 @@ const HowItWorks = () => {
                                 <Button variant="genome" size="xl" className="group">
                                     Start Building
                                     <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                </Button>
+                            </Link>
+                            <Link to="/interview">
+                                <Button variant="genome-outline" size="xl" className="group">
+                                    Try Interview
+                                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                                 </Button>
                             </Link>
                         </motion.div>
@@ -204,7 +272,7 @@ const HowItWorks = () => {
                 </motion.div>
             </section>
 
-            {/* Steps Section */}
+            {/* 8-Step Architecture Section */}
             <section ref={containerRef} className="py-24 relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
 
@@ -216,10 +284,10 @@ const HowItWorks = () => {
                         className="text-center mb-20"
                     >
                         <h2 className="font-display text-4xl font-bold text-foreground mb-4">
-                            Your Journey to Mastery
+                            System Architecture
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Five powerful steps that transform how you learn and grow
+                            Eight powerful steps that map your true skill DNA
                         </p>
                     </motion.div>
 
@@ -314,6 +382,57 @@ const HowItWorks = () => {
                 </div>
             </section>
 
+            {/* ML Models Section */}
+            <section className="py-24 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-background via-purple-500/5 to-background" />
+
+                <div className="container mx-auto px-4 relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-16"
+                    >
+                        <h2 className="font-display text-4xl font-bold text-foreground mb-4">
+                            🧪 ML Models Used
+                        </h2>
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                            Powered by cutting-edge machine learning for accurate, real-time analysis
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={containerVariants}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 max-w-6xl mx-auto"
+                    >
+                        {mlModels.map((model) => {
+                            const Icon = model.icon;
+                            return (
+                                <motion.div
+                                    key={model.name}
+                                    variants={itemVariants}
+                                    whileHover={{ y: -5 }}
+                                    className="genome-card text-center"
+                                >
+                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mx-auto mb-4 border border-primary/10">
+                                        <Icon className="w-7 h-7 text-primary" />
+                                    </div>
+                                    <h3 className="font-display font-semibold text-sm text-foreground mb-2">
+                                        {model.name}
+                                    </h3>
+                                    <p className="text-muted-foreground text-xs leading-relaxed">
+                                        {model.description}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
+                    </motion.div>
+                </div>
+            </section>
+
             {/* Benefits Section */}
             <section className="py-24 relative overflow-hidden">
                 <motion.div
@@ -329,7 +448,7 @@ const HowItWorks = () => {
                         className="text-center mb-16"
                     >
                         <h2 className="font-display text-4xl font-bold text-foreground mb-4">
-                            Why Choose GyaniX?
+                            Why Choose Skill Genome?
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                             Built for developers who want to accelerate their growth
@@ -390,20 +509,27 @@ const HowItWorks = () => {
                             </motion.div>
 
                             <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
-                                Ready to Evolve?
+                                Ready to Map Your Skill DNA?
                             </h2>
 
                             <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
-                                Join thousands of developers who are transforming their careers
-                                with AI-powered skill evolution.
+                                Skill Genome doesn't judge you by your past — it maps your future.
                             </p>
 
-                            <Link to="/build">
-                                <Button variant="genome" size="xl" className="group">
-                                    Build Your GyaniX
-                                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                                </Button>
-                            </Link>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <Link to="/build">
+                                    <Button variant="genome" size="xl" className="group">
+                                        Build Your Skill Genome
+                                        <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                    </Button>
+                                </Link>
+                                <Link to="/interview">
+                                    <Button variant="genome-outline" size="xl" className="group">
+                                        Start Interview
+                                        <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

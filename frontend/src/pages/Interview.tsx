@@ -23,6 +23,9 @@ import {
     Code,
     Users,
     Briefcase,
+    Eye,
+    ScanFace,
+    Shield,
 } from "lucide-react";
 
 interface Skill {
@@ -104,24 +107,34 @@ const Interview = () => {
 
     const features = [
         {
-            icon: Mic,
-            title: "Voice Analysis",
-            description: "AI evaluates your communication clarity and confidence",
+            icon: ScanFace,
+            title: "Body Language Analysis",
+            description: "MediaPipe-powered eye contact, expression & posture tracking",
         },
         {
-            icon: Video,
-            title: "Video Recording",
-            description: "Review your performance with detailed playback",
+            icon: Mic,
+            title: "Communication Eval",
+            description: "Speech clarity, filler detection, and confidence scoring",
         },
         {
             icon: Target,
-            title: "Personalized Questions",
-            description: "Questions based on your extracted GyaniX",
+            title: "Skill-Based Questions",
+            description: "Questions based on your extracted GyaniX skill map",
+        },
+        {
+            icon: Eye,
+            title: "Eye Contact Tracking",
+            description: "Real-time iris gaze direction & focus analysis",
+        },
+        {
+            icon: Shield,
+            title: "Bias-Free Scoring",
+            description: "No college, appearance, or demographic bias — skills only",
         },
         {
             icon: Award,
-            title: "Performance Score",
-            description: "Get detailed feedback and improvement suggestions",
+            title: "Skill Genome Report",
+            description: "Radar chart, confidence grade, and growth suggestions",
         },
     ];
 
@@ -368,7 +381,7 @@ const Interview = () => {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="max-w-4xl mx-auto mb-16"
                     >
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {features.map((feature, index) => (
                                 <motion.div
                                     key={feature.title}

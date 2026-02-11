@@ -1,32 +1,27 @@
 import { Link } from "react-router-dom";
-import { Dna, Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Dna, Github, Mail } from "lucide-react";
 
 const footerLinks = {
   product: [
-    { label: "Features", href: "#features" },
     { label: "Dashboard", href: "/dashboard" },
-    { label: "Daily Tasks", href: "/tasks" },
+    { label: "Interview", href: "/interview" },
+    { label: "Build Genome", href: "/build" },
+    { label: "Growth Roadmap", href: "/growth-roadmap" },
+    { label: "Skill Genome Report", href: "/skill-genome-report" },
     { label: "Analytics", href: "/analytics" },
   ],
   resources: [
-    { label: "Documentation", href: "#" },
-    { label: "API", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Support", href: "#" },
+    { label: "How It Works", href: "/how-it-works" },
+    { label: "Daily Tasks", href: "/tasks" },
   ],
   company: [
-    { label: "About", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
+    { label: "About", href: "/about" },
   ],
 };
 
 const socialLinks = [
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Mail, href: "#", label: "Email" },
+  { icon: Github, href: "https://github.com/mayurk-prog/skill-genome", label: "GitHub" },
+  { icon: Mail, href: "mailto:contact@skillgenome.dev", label: "Email" },
 ];
 
 export const Footer = () => {
@@ -89,12 +84,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors duration-200"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -107,12 +102,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors duration-200"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
