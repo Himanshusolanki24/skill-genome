@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -118,6 +119,31 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--genome-pink) / 0.4)" },
           "50%": { boxShadow: "0 0 40px hsl(var(--genome-pink) / 0.6)" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "gradient-rotate": {
+          "0%": { "--glow-angle": "0deg" } as Record<string, string>,
+          "100%": { "--glow-angle": "360deg" } as Record<string, string>,
+        },
+        morph: {
+          "0%, 100%": { borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" },
+          "25%": { borderRadius: "30% 60% 70% 40% / 50% 60% 30% 60%" },
+          "50%": { borderRadius: "50% 60% 30% 60% / 30% 60% 70% 40%" },
+          "75%": { borderRadius: "60% 40% 60% 30% / 40% 50% 60% 50%" },
+        },
+        "text-gradient-shift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        "bounce-in": {
+          "0%": { opacity: "0", transform: "scale(0.3)" },
+          "50%": { transform: "scale(1.05)" },
+          "70%": { transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -129,6 +155,11 @@ export default {
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         float: "float 6s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        shimmer: "shimmer 2s linear infinite",
+        "gradient-rotate": "gradient-rotate 3s linear infinite",
+        morph: "morph 8s ease-in-out infinite",
+        "text-gradient-shift": "text-gradient-shift 4s ease infinite",
+        "bounce-in": "bounce-in 0.6s ease-out",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -137,5 +168,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

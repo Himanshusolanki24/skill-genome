@@ -308,4 +308,73 @@
   .scrollbar-genome::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--genome-pink));
   }
+
+  /* Shimmer sweep effect */
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--genome-pink) / 0.08) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Animated gradient card border */
+  .glow-card-border {
+    position: relative;
+  }
+  .glow-card-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--glow-angle, 0deg),
+      transparent 0%,
+      hsl(var(--genome-pink)) 10%,
+      transparent 20%
+    );
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: -1;
+  }
+  .glow-card-border:hover::before {
+    opacity: 0.6;
+    animation: gradient-rotate 3s linear infinite;
+  }
+
+  /* Morphing blob */
+  .blob-morph {
+    animation: morph 8s ease-in-out infinite;
+  }
+
+  /* Animated gradient text */
+  .text-gradient-animated {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--genome-pink)),
+      hsl(280, 87%, 65%),
+      hsl(199, 89%, 48%),
+      hsl(var(--genome-pink))
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-gradient-shift 4s ease infinite;
+  }
+}
+
+/* CSS @property for gradient rotation — must be outside @layer */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradient-rotate {
+  0% { --glow-angle: 0deg; }
+  100% { --glow-angle: 360deg; }
 }

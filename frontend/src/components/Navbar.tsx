@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dna, LayoutDashboard, Target, BarChart3, User, LogOut, ChevronDown, Settings, Sun, Moon, Mic } from "lucide-react";
@@ -21,6 +21,15 @@ export const Navbar = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -57,16 +66,19 @@ export const Navbar = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border"
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled
+          ? "bg-background/90 backdrop-blur-2xl border-border shadow-lg shadow-black/5"
+          : "bg-background/60 backdrop-blur-xl border-border/50"
+        }`}
     >
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="relative">
+            <motion.div className="relative" whileHover={{ scale: 1.1, rotate: 5 }} transition={{ type: "spring", stiffness: 300 }}>
               <Dna className="w-8 h-8 text-primary transition-transform duration-300 group-hover:rotate-12" />
               <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
+            </motion.div>
             <span className="font-display font-bold text-xl text-foreground">
               Gyani<span className="text-primary">X</span>
             </span>

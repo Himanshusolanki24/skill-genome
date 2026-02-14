@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Camera, Eye, Smile, Move, AlertCircle, Loader2 } from "lucide-react";
 import type { BodyLanguageMetrics } from "@/hooks/useMediaPipe";

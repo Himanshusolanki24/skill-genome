@@ -5,6 +5,9 @@ import { NeuralBackground } from "@/components/NeuralBackground";
 import { GyaniXPreview } from "@/components/GyaniXPreview";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import TextReveal from "@/components/ui/TextReveal";
+import GlowCard from "@/components/ui/GlowCard";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import {
   Dna,
   Target,
@@ -146,6 +149,11 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
         <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
 
+        {/* Morphing Blob Backgrounds */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 blob-morph blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/8 blob-morph blur-3xl pointer-events-none" style={{ animationDelay: '-4s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-500/5 blob-morph blur-3xl pointer-events-none" style={{ animationDelay: '-2s' }} />
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -157,17 +165,17 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8 animate-shimmer"
             >
               <Sparkles className="w-4 h-4" />
               <span>AI-Powered • Bias-Free • Skill-First Hiring</span>
             </motion.div>
 
             <h1 className="font-display text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Map Your True{" "}
-              <span className="text-gradient-pink">Skill DNA.</span>
+              <TextReveal text="Map Your True" delay={0.3} className="justify-center" />
+              <span className="text-gradient-animated">Skill DNA.</span>
               <br />
-              <span className="text-gradient-pink">Evolve Your Future.</span>
+              <TextReveal text="Evolve Your Future." delay={0.6} className="justify-center text-gradient-animated" />
             </h1>
 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
@@ -198,22 +206,32 @@ const Index = () => {
 
           {/* Floating Elements */}
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, -15, 0], rotate: [0, 8, 0], scale: [1, 1.05, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="absolute left-10 top-1/3 hidden lg:block"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center backdrop-blur-sm glow-card-border">
               <GitBranch className="w-8 h-8 text-primary" />
             </div>
           </motion.div>
 
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, 12, 0], rotate: [0, -6, 0], scale: [1, 1.08, 1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute right-10 top-1/2 hidden lg:block"
           >
-            <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center backdrop-blur-sm glow-card-border">
               <Brain className="w-10 h-10 text-primary" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 10, 0], rotate: [0, -4, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute right-[15%] top-1/4 hidden xl:block"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center backdrop-blur-sm">
+              <Code className="w-7 h-7 text-purple-400" />
             </div>
           </motion.div>
         </div>
@@ -253,21 +271,16 @@ const Index = () => {
                   key={feature.title}
                   variants={itemVariants}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
-                  whileHover={{ y: -6, scale: 1.02 }}
                   className="group"
                 >
-                  <div className="relative h-full">
-                    <div className="absolute -inset-[1px] bg-gradient-to-r opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-2xl blur-sm"
-                      style={{
-                        backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
-                      }}
-                    />
-                    <div className="relative bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 p-6 h-full transition-all duration-300 group-hover:border-primary/30">
-                      <div
+                  <GlowCard className="h-full">
+                    <div className="p-6 h-full">
+                      <motion.div
                         className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.bg} flex items-center justify-center mb-4 border border-border/30`}
+                        whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
                       >
                         <Icon className="w-6 h-6 text-primary" />
-                      </div>
+                      </motion.div>
                       <h3 className="font-display font-semibold text-lg text-foreground mb-2">
                         {feature.title}
                       </h3>
@@ -275,7 +288,7 @@ const Index = () => {
                         {feature.description}
                       </p>
                     </div>
-                  </div>
+                  </GlowCard>
                 </motion.div>
               );
             })}
@@ -820,17 +833,25 @@ const Index = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
           >
             {[
-              { value: "10K+", label: "Interviews Completed", color: "from-primary to-purple-500" },
-              { value: "94%", label: "Success Rate", color: "from-purple-500 to-pink-500" },
-              { value: "500+", label: "Companies Hiring", color: "from-pink-500 to-orange-500" },
-              { value: "50K+", label: "Skills Mapped", color: "from-orange-500 to-amber-500" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center p-6 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/50">
-                <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
-                  {stat.value}
+              { value: 10000, suffix: "+", label: "Interviews Completed", color: "from-primary to-purple-500" },
+              { value: 94, suffix: "%", label: "Success Rate", color: "from-purple-500 to-pink-500" },
+              { value: 500, suffix: "+", label: "Companies Hiring", color: "from-pink-500 to-orange-500" },
+              { value: 50000, suffix: "+", label: "Skills Mapped", color: "from-orange-500 to-amber-500" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="text-center p-6 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/50 hover:border-primary/30 transition-colors"
+              >
+                <div className={`text-3xl font-bold font-display bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                  <AnimatedCounter target={stat.value} suffix={stat.suffix} duration={2} />
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
 

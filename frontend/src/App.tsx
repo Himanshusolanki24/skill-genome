@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProfileCompletionModal } from "@/components/ProfileCompletionModal";
@@ -23,6 +24,7 @@ import SkillGenomeReport from "./pages/SkillGenomeReport";
 import GrowthRoadmap from "./pages/GrowthRoadmap";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import PageTransition from "@/components/PageTransition";
 
 const queryClient = new QueryClient();
 
@@ -63,25 +65,27 @@ const AppContent = () => {
         onComplete={handleCompleteProfile}
         userName={profile?.full_name?.split(" ")[0] || "there"}
       />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/build" element={<BuildGenome />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/interview" element={<Interview />} />
-        <Route path="/interview/technical" element={<TechnicalInterview />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/tasks/:taskId" element={<TaskDetail />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/complete-profile" element={<CompleteProfile />} />
-        <Route path="/skill-genome-report" element={<SkillGenomeReport />} />
-        <Route path="/growth-roadmap" element={<GrowthRoadmap />} />
-        <Route path="/about" element={<About />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+          <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+          <Route path="/build" element={<PageTransition><BuildGenome /></PageTransition>} />
+          <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
+          <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+          <Route path="/interview" element={<PageTransition><Interview /></PageTransition>} />
+          <Route path="/interview/technical" element={<PageTransition><TechnicalInterview /></PageTransition>} />
+          <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
+          <Route path="/tasks/:taskId" element={<PageTransition><TaskDetail /></PageTransition>} />
+          <Route path="/analytics" element={<PageTransition><Analytics /></PageTransition>} />
+          <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+          <Route path="/complete-profile" element={<PageTransition><CompleteProfile /></PageTransition>} />
+          <Route path="/skill-genome-report" element={<PageTransition><SkillGenomeReport /></PageTransition>} />
+          <Route path="/growth-roadmap" element={<PageTransition><GrowthRoadmap /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
     </>
   );
 };

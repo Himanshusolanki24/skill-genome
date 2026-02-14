@@ -34,6 +34,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { API_BASE_URL, parseApiResponse } from "@/lib/api";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
 
 interface InterviewResult {
   id: string;
@@ -362,61 +363,40 @@ const Dashboard = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
           >
-            <Card variant="genome" className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Award className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-display font-bold text-foreground">
-                    {stats.skillsMastered}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Skills Mastered</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="genome" className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-skill-intermediate/10 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-skill-intermediate" />
-                </div>
-                <div>
-                  <p className="text-2xl font-display font-bold text-foreground">
-                    {stats.totalXp.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Total XP</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="genome" className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-skill-advanced/10 flex items-center justify-center">
-                  <Target className="w-5 h-5 text-skill-advanced" />
-                </div>
-                <div>
-                  <p className="text-2xl font-display font-bold text-foreground">
-                    {stats.interviewsDone}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Interviews</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="genome" className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-skill-beginner/10 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-skill-beginner" />
-                </div>
-                <div>
-                  <p className="text-2xl font-display font-bold text-foreground">
-                    {stats.overallScore}%
-                  </p>
-                  <p className="text-sm text-muted-foreground">Overall Score</p>
-                </div>
-              </div>
-            </Card>
+            {[
+              { icon: Award, value: stats.skillsMastered, label: "Skills Mastered", colorClass: "bg-primary/10", iconColor: "text-primary", delay: 0 },
+              { icon: Zap, value: stats.totalXp, label: "Total XP", colorClass: "bg-skill-intermediate/10", iconColor: "text-skill-intermediate", delay: 0.1 },
+              { icon: Target, value: stats.interviewsDone, label: "Interviews", colorClass: "bg-skill-advanced/10", iconColor: "text-skill-advanced", delay: 0.2 },
+              { icon: TrendingUp, value: stats.overallScore, label: "Overall Score", colorClass: "bg-skill-beginner/10", iconColor: "text-skill-beginner", suffix: "%", delay: 0.3 },
+            ].map((stat) => {
+              const StatIcon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 + stat.delay }}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                >
+                  <Card variant="genome" className="p-4 hover:border-primary/30 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <motion.div
+                        className={`w-10 h-10 rounded-xl ${stat.colorClass} flex items-center justify-center`}
+                        whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
+                      >
+                        <StatIcon className={`w-5 h-5 ${stat.iconColor}`} />
+                      </motion.div>
+                      <div>
+                        <p className="text-2xl font-display font-bold text-foreground">
+                          <AnimatedCounter target={stat.value} suffix={stat.suffix || ""} duration={1.5} />
+                        </p>
+                        <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
           <div className="grid lg:grid-cols-3 gap-6">
