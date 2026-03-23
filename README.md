@@ -1,4 +1,4 @@
-Running link - https://skill-genome-j325.vercel.app/
+
 
 
 🧬 Skill Genome
